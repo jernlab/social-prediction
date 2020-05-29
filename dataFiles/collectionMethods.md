@@ -45,13 +45,13 @@ Now for each the newly opened tabs...
  - For each of the remaining trips on this page, click the "details" button.
  - Now:
   - If the trip you've clicked on is a mixed mode trip (has the icon for both a train and a bus)
-   - If the first vehicle in the route is not a train, **skip/discard this trip**
-   - Else continue reading.
+   -- If the first vehicle in the route is not a train, **skip/discard this trip**
+   -- Else continue reading.
   - Record the train number (You should see something along the lines of *Amtrak Saluki (Train #839)*, 839 would be the train number)
   - Do this for all trips making sure
   - Make sure not to record duplicates. Duplicates are trains that
-   - Have the same departure time and location
-   - Have the same train number.
+   -- Have the same departure time and location
+   -- Have the same train number.
 
 The number of unique trains recorded for all newly opened tabs is the number of trains to arrive at a station in a day.
 ------------
