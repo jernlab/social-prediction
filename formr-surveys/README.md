@@ -1,4 +1,5 @@
 # Survey Explanation
+These Excel files can be uploaded to Formr to generate the surveys used in the experiment.
 
 ## Formatting and Updating Spreadsheets
 Column labels are all used according to the specs of the Formr Documentation here: https://formr.org/documentation#sample_survey_sheet 
