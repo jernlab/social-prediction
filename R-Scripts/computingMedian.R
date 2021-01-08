@@ -1,0 +1,336 @@
+source('~/research/filterOutliers.r')
+source('~/research/computeModelPosterior.r')
+source('~/research/makeLMECompatible.r')
+
+#################################################################################
+#################################################################################
+#Generating predictions
+
+#The story we would like to plot info for. These are in order of appearance in the Data frame.
+# I.e. 1 -> Cake
+#      2 -> Bus
+#      3 -> Drive
+#      4 -> Train
+situation<-2
+
+#The value of t_total we want to generate predictions for
+t_total = 23
+
+#The maximum y-values for ggplots, dependent on situation/story
+yLimits<-list(
+  100,       # Cake,adj = 125 raw = 125 
+  43,        # Bus, adj = 50  raw = 65
+  1100,      # Flash Drive, adj = 1100  raw = 2050
+  40        # Train, adj = 40 raw = 405
+)
+
+#Reading in the data for the chosen situation
+if(situation == 1){
+  t_total_info = read.csv("C:/Users/paynesc/Documents/research/finalCakeData.csv", header = FALSE)
+}
+if(situation == 2){
+  t_total_info = read.csv("C:/Users/paynesc/Documents/research/busData.csv", header = FALSE)
+}
+if(situation == 3){
+  t_total_info = read.csv("C:/Users/paynesc/Documents/research/flashDriveData.csv", header = FALSE)
+}
+if(situation == 4){
+  t_total_info = read.csv("C:/Users/paynesc/Documents/research/trainsData.csv", header = FALSE)
+}
+
+# t_total_info (the data from the csv file) is a 2 column vector. 
+# The first column ($V1) is a value and the second column ($V2)
+# is the probability associated with that value. (i.e t_total and p(t_total))
+# Ex:
+#=========
+# 1  0.1
+# 5  0.08
+# 12 0.076
+# 13 0.00012
+# 17 0.304
+# 26 0.0052
+# ... ...
+#
+
+t_total_vals = t_total_info$V1
+
+gamma = 1 #Left over variable from implementation of the non-augmented model. Ignore this (it isn't used in model prediction)
+nvals = length(t_total_vals)
+
+#Vector of x-values for plotting
+x_vals<-c(1:t_total) 
+
+#Vector of y-values for plotting augmented model (social)
+y1_vals <- c(1:t_total)
+
+#Vector of y-values for plotting non-augmented model (non-social)
+y2_vals <- c(1:t_total)
+
+# A vector to store calculated posterior P(T_total | T) values.
+# (all_post for the social condition, all_post2 for the non-social condition)
+all_post <- c(1:nvals)
+all_post2 <- c(1:nvals)
+
+avg_list = c()
+lvl_list = c()
+
+avg_list2 = c()
+lvl_list2 = c()
+
+# Algorithm/Prediction Making Explanation:
+# Predictions are made by choosing the t_total value at the median of the probability distribution
+# for posteriors. 
+
+#For each t value, we will make a prediction
+for (i in (1:t_total)){
+  
+  
+  # Within our possible t_total values, we find the index of the first value
+  # greater than t (because the minimum predicted value cannot be less than
+  # what has already been observed).
+  
+  startPoint = 0
+  
+  for (j in (1:nvals)){
+    if(t_total_vals[j] >i){
+      startPoint = j
+      break
+    }
+  }
+  
+  # If the startPoint is equal to 0, then we found no values of t_total that we
+  # could select within the data set that would allow us to make a prediction;
+  # thus we predict t_total to be t, as no evidence supports a higher prediction
+  
+  if(startPoint == 0){
+    y1_vals[i] = i
+    y2_vals[i] = i
+    next
+  } 
+  
+  # Otherwise we calculate all posteriors from t_total_vals[startPoint] till the end of our data set,
+  # find the median, and use the value at the median as the predicted t_total value.
+  sum = 0
+  sum2 = 0
+  for (k in (startPoint: nvals)){
+    
+    #Calculate posterior for augmented (social) model
+    post = computeModelPosterior_deriv(t_total_vals[k], i, gamma, t_total_info, situation)
+    
+    #This simply makes sure the posteriors always start filling from the beginning of the post array
+    all_post[k - startPoint + 1] = post
+    sum= sum + post
+    
+    #Calculate posterior for the non-augmented (non-social) model
+    post2 = computeModelPosterior_deriv(t_total_vals[k], i, gamma, t_total_info, 0)
+    all_post2[k - startPoint + 1] = post2
+    sum2 = sum2 + post2
+  }
+  
+  #Calculate the t_total at the median of the posteriors for...
+  
+  
+  #...The social prediction
+  median_amnt = sum/2.0
+  median_sum = 0
+  post_index = 1
+  
+  while(median_sum < median_amnt){
+    median_sum = median_sum + all_post[post_index]
+    post_index= post_index + 1
+  }
+  
+  
+  y1_vals[i] = t_total_vals[startPoint + post_index - 2]
+  
+  #...The non-social prediction
+  median_amnt = sum2/2.0
+  median_sum = 0
+  post_index = 1
+  
+  while(median_sum < median_amnt){
+    median_sum = median_sum + all_post2[post_index]
+    post_index= post_index + 1
+  }
+  y2_vals[i] = t_total_vals[startPoint + post_index - 2]
+}
+library(ggplot2)
+library(gridExtra)
+
+###########################################################################
+###########################################################################
+#Processing Experimental Info per situation
+mean_95CI<-function(x){
+  return (mean_se(x, 1.96))  
+}
+
+nonFilteredData <- read.csv(file = "C:/Users/paynesc/Documents/research/10_3_2020Tidy.csv")
+myData <- filterOutliers(nonFilteredData, situation)
+#myData Data Frame Format Example:
+# ID       ExpType    Group    Cake     Bus     Drive    Train
+# blahblah Social       1       20      10       120       30
+# blahblah Social       4       30      40       220       14
+# blahblah Social       3       20      10       120       30
+# blahblah nonSocial    5       20      10       120       30
+# blahblah nonSocial    2       10      42       300       60
+# blahblah nonSocial    1       20      10       120       30
+
+#ID = myData[1], ExpType =myData[2], Group = myData[3], Cake = myData[4], etc...
+
+#The t-values for each situation, each situation's t-values are stored in their own vector
+allLevels<-list(c(10,20,35,50,70), #Cake
+                c(2,5,10,15,21),  #Bus
+                c(5,28,57,96,125), #Flash Drive
+                c(1,2,4,6,7))    #Train
+
+
+
+#The titles of each of the graphs. This was done for convenience.
+allLabels<-c("Cake", "Bus", "Drives", "Train")
+socialLabels<-c("Social - Cake", "Social - Bus", "Social - Drives", "Social - Train")
+nonsocialLabels<-c("Non-Social - Cake", "NonSocial - Bus", "NonSocial - Drives", "NonSocial - Train")
+
+#Declaring variables needed to calculate the average/predicted value for each t-value (level) of the story in the experiment
+avg <- 0
+count <- 0
+levelsVec <- allLevels[[situation]]
+levelAvg <- c(1:5) #Aka socPred. This is the vector of predicted values for the social context.
+nonSocPred<-c(1:5) #Vector of predicted values for the non-social context.
+lvl<-0             #The current level of situation we are calculating the average for.
+
+
+
+
+
+
+# for(lvl in 1:5){
+#   avg = 0
+#   count = 0
+# 
+#   for (i in 1:53) {
+#     if(myData[i,3] == lvl){
+#       avg = avg + myData[i,3+situation] # The columns in the data frame are
+#       count = count + 1
+#       avg_list = append(avg_list, myData[i,3 + situation])
+#       lvl_list = append(lvl_list, allLevels[[situation]][lvl])
+#       
+#     }
+#     
+#     avg = avg/count
+#     levelAvg[lvl] = avg
+#     
+#   }}
+
+#Calculate the averages for each level of the story for the non-social case.
+for(lvl in 1:5){
+  avg = 0
+  count = 0
+  i = 1
+  while(!identical(as.character(myData[i,2]), "Non-Social")){
+    i = i + 1
+  }
+  socialVsNonsocial = as.character(myData[i,2]) #Stores whether current row is a non-social or social experiment result
+  while(identical(socialVsNonsocial,"Non-Social")){
+    if(myData[i,3] == lvl){
+      avg = avg + myData[i,3+situation] # The columns in the data frame are 
+      count = count + 1
+      avg_list2 = append(avg_list2, myData[i,3 + situation])
+      lvl_list2 = append(lvl_list2, allLevels[[situation]][lvl])
+    }
+    i = i + 1
+    socialVsNonsocial = as.character(myData[i, 2])
+  }
+  avg = avg/count
+  nonSocPred[lvl] = avg
+}
+
+#Calculate the averages for each level of the story for the social case.
+for(lvl in 1:5){
+  avg = 0
+  count = 0
+  i = 1
+  while(!identical(as.character(myData[i,2]), "Social")){
+    i = i + 1
+  }
+  socialVsNonsocial = as.character(myData[i,2]) #Stores whether current row is a non-social or social experiment result
+  while(identical(socialVsNonsocial,"Social")){
+    if(myData[i,3] == lvl){
+      avg = avg + myData[i,3+situation] # The columns in the data frame are 
+      count = count + 1
+      avg_list = append(avg_list, myData[i,3 + situation])
+      lvl_list = append(lvl_list, allLevels[[situation]][lvl])
+    }
+    i = i + 1
+    socialVsNonsocial = as.character(myData[i, 2])
+  }
+  avg = avg/count
+  levelAvg[lvl] = avg
+}
+
+#Plot the graphs
+
+# predictionPlot = ggplot(mapping = aes(lvl_list, avg_list)) +xlab("t")+stat_summary(fun = mean, geom="point")+stat_summary(fun.data = mean_95CI, geom="errorbar")+ylab("Predicted t_total")+ggtitle(socialLabels[situation])+xlim(0, t_total)+coord_cartesian(ylim=c(0, yLimits[[situation]]))
+# predictionPlot = predictionPlot + geom_line(mapping = aes(x = x_vals,y =y1_vals), color="brown")
+# 
+# nonSocPlot = ggplot(mapping=aes(lvl_list2, avg_list2))+stat_summary(fun = mean, geom="point")+stat_summary(fun.data = mean_95CI, geom="errorbar") +xlab("t")+ylab("Predicted t_total")+ggtitle(nonsocialLabels[situation])+xlim(0, t_total)+coord_cartesian(ylim=c(0, yLimits[[situation]]))
+# nonSocPlot = nonSocPlot + geom_line(mapping = aes(x=x_vals, y=y2_vals), color="blue")
+# 
+# grid.arrange(predictionPlot, nonSocPlot)
+
+#Generating Experiment (box) vs Prediction (line) plots
+#=======================================================
+                        #Social
+#=======================================================
+
+socTibble = tibble(lvl_list, avg_list)
+socPlot = ggplot(socTibble, aes(x = factor(lvl_list), y = avg_list))+ xlab("t") +ylab("Predicted t-total") + ggtitle(socialLabels[situation])
+socPlot = socPlot + geom_boxplot()+coord_cartesian(ylim=c(0,yLimits[[situation]]))
+socPlot = socPlot + geom_line(inherit.aes = FALSE, data = tibble(x_vals, y1_vals), aes(x_vals, y1_vals)) + scale_x_discrete(limits=1:allLevels[[situation]][[5]], breaks=allLevels[[situation]])
+#=======================================================
+                      #Non-Social
+#=======================================================
+nonSocTibble = tibble(lvl_list2, avg_list2)
+nonSocPlot = ggplot(nonSocTibble, aes(x = factor(lvl_list2), y = avg_list2)) + ggtitle(nonsocialLabels[situation])
+nonSocPlot = nonSocPlot + geom_boxplot()+ xlab("t") +ylab("Predicted t-total")+coord_cartesian(ylim=c(0,yLimits[[situation]]))
+nonSocPlot = nonSocPlot + geom_line(inherit.aes = FALSE, data = data.frame(x_vals, y2_vals), aes(x_vals, y2_vals)) + scale_x_discrete(limits=1:allLevels[[situation]][[5]], breaks=allLevels[[situation]])
+
+#Generating Social vs Non-Social Histogram
+numNonSocialGuesses = length(lvl_list2)
+numSocialGuesses = length(lvl_list)
+histoData = data.frame("Levels" = append(lvl_list2, lvl_list), "Guesses" = append(avg_list2, avg_list), "Condition" = append(rep("Non-Social", numNonSocialGuesses), rep("Social", numSocialGuesses)))
+histo = ggplot(data = histoData)+geom_jitter(aes(x=Levels, y=Guesses, colour=Condition),width=1.1, alpha=0.65)
+histo = histo + ggtitle(paste("Predictions against Level -", allLabels[[situation]] ) ) + ylab("Predicted t-total")
+histo = histo + scale_x_discrete(limits=1:(allLevels[[situation]][[5]]+5), breaks=allLevels[[situation]])
+grid.arrange(socPlot, nonSocPlot, histo)
+
+#Calculating Errors
+#=======================================================
+                  #Mean-Squared Error
+#=======================================================
+meanSquaredErrorSocial = 0
+meanSquaredErrorNonSocial = 0
+for(i in 1:5){
+  lvl = levelsVec[i]
+  predictedValue = y1_vals[lvl]
+  experimentValue = levelAvg[i]
+  meanSquaredErrorSocial = meanSquaredErrorSocial + ((1/5) * ((experimentValue - predictedValue)^2))
+}
+print(meanSquaredErrorSocial)
+
+for(i in 1:5){
+  lvl = levelsVec[i]
+  predictedValue = y2_vals[lvl]
+  experimentValue = nonSocPred[i]
+  meanSquaredErrorNonSocial = meanSquaredErrorNonSocial + ((1/5) * ((experimentValue - predictedValue)^2))
+}
+print(meanSquaredErrorNonSocial)
+#=======================================================
+                #Linear-Mixed Modeling
+#=======================================================
+partialFilteredData <- nonFilteredData
+for(i in 1:4){
+  partialFilteredData <- filterOutliers(partialFilteredData, i)
+}
+lmeDf <- partialFilteredData
+lmeDf <- makeLMECompatible(lmeDf)
+lme4::lmer(Guess ~ Context + Domain + Level + (1|Subject), data=lmeDf)
