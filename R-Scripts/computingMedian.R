@@ -11,18 +11,48 @@ source('~/research/makeLMECompatible.r')
 #      2 -> Bus
 #      3 -> Drive
 #      4 -> Train
-situation<-2
+situation<-3
+experimentVersion = 1
+#The t-values for each situation, each situation's t-values are stored in their own vector
+if(experimentVersion == 1){
+  allLevels<-list(c(10,20,35,50,70), #Cake
+                  c(2,10,20,30,45),  #Bus
+                  c(5,28,57,96,125), #Flash Drive
+                  c(2,4,8,16,30))    #Train
+  #Cake= ,Bus = 0.8, Drives = 3.0 + , Train = 0.2,
+  jitterAmts = c(2.0, 0.8, 3.0, 0.8)
+  
+  #The maximum y-values for ggplots, dependent on situation/story
+  yLimits<-list(
+    90,       # Cake,adj = 90 raw = 130 
+    55,        # Bus, adj = 55  raw = 730
+    510,      # Flash Drive, adj = 510  raw = 1060
+    130        # Train, adj = 130 raw = 210
+  )
+}
+if(experimentVersion == 2){
+  allLevels<-list(c(10,20,35,50,70), #Cake
+                  c(2,5,10,15,21),  #Bus
+                  c(5,28,57,96,125), #Flash Drive
+                  c(1,2,4,6,7))    #Train
+  
+  #Cake= ,Bus = 0.8, Drives = 3.0 + , Train = 0.2,
+  jitterAmts = c(2.0, 0.8, 3.0, 0.2)
+  
+  #The maximum y-values for ggplots, dependent on situation/story
+  yLimits<-list(
+    100,       # Cake,adj = 125 raw = 125 
+    43,        # Bus, adj = 50  raw = 65
+    1100,      # Flash Drive, adj = 1100  raw = 2050
+    40        # Train, adj = 40 raw = 405
+  )
+}
 
 #The value of t_total we want to generate predictions for
-t_total = 23
+t_total = allLevels[[situation]][[5]] + 1
 
-#The maximum y-values for ggplots, dependent on situation/story
-yLimits<-list(
-  100,       # Cake,adj = 125 raw = 125 
-  43,        # Bus, adj = 50  raw = 65
-  1100,      # Flash Drive, adj = 1100  raw = 2050
-  40        # Train, adj = 40 raw = 405
-)
+
+
 
 #Reading in the data for the chosen situation
 if(situation == 1){
@@ -164,8 +194,15 @@ mean_95CI<-function(x){
   return (mean_se(x, 1.96))  
 }
 
-nonFilteredData <- read.csv(file = "C:/Users/paynesc/Documents/research/10_3_2020Tidy.csv")
-myData <- filterOutliers(nonFilteredData, situation)
+if(experimentVersion == 1){
+  nonFilteredData <- read.csv(file = "C:/Users/paynesc/Documents/research/4_7_2020Tidy.csv")
+  myData <- filterOutliers(nonFilteredData, situation)
+}
+if(experimentVersion == 2){
+  nonFilteredData <- read.csv(file = "C:/Users/paynesc/Documents/research/10_3_2020Tidy.csv")
+  myData <- filterOutliers(nonFilteredData, situation)
+}
+
 #myData Data Frame Format Example:
 # ID       ExpType    Group    Cake     Bus     Drive    Train
 # blahblah Social       1       20      10       120       30
@@ -177,18 +214,12 @@ myData <- filterOutliers(nonFilteredData, situation)
 
 #ID = myData[1], ExpType =myData[2], Group = myData[3], Cake = myData[4], etc...
 
-#The t-values for each situation, each situation's t-values are stored in their own vector
-allLevels<-list(c(10,20,35,50,70), #Cake
-                c(2,5,10,15,21),  #Bus
-                c(5,28,57,96,125), #Flash Drive
-                c(1,2,4,6,7))    #Train
-
 
 
 #The titles of each of the graphs. This was done for convenience.
 allLabels<-c("Cake", "Bus", "Drives", "Train")
-socialLabels<-c("Social - Cake", "Social - Bus", "Social - Drives", "Social - Train")
-nonsocialLabels<-c("Non-Social - Cake", "NonSocial - Bus", "NonSocial - Drives", "NonSocial - Train")
+socialLabels<-c("Social: Cake", "Social: Bus", "Social: Drives", "Social: Train")
+nonsocialLabels<-c("Non-Social: Cake", "Non-Social: Bus", "Non-Social: Drives", "Non-Social: Train")
 
 #Declaring variables needed to calculate the average/predicted value for each t-value (level) of the story in the experiment
 avg <- 0
@@ -297,11 +328,27 @@ nonSocPlot = nonSocPlot + geom_line(inherit.aes = FALSE, data = data.frame(x_val
 #Generating Social vs Non-Social Histogram
 numNonSocialGuesses = length(lvl_list2)
 numSocialGuesses = length(lvl_list)
+
+#Best widths for jitter
+#Cake= ,Bus = 0.8, Drives = 3.0 + , Train = 0.2,
 histoData = data.frame("Levels" = append(lvl_list2, lvl_list), "Guesses" = append(avg_list2, avg_list), "Condition" = append(rep("Non-Social", numNonSocialGuesses), rep("Social", numSocialGuesses)))
-histo = ggplot(data = histoData)+geom_jitter(aes(x=Levels, y=Guesses, colour=Condition),width=1.1, alpha=0.65)
-histo = histo + ggtitle(paste("Predictions against Level -", allLabels[[situation]] ) ) + ylab("Predicted t-total")
-histo = histo + scale_x_discrete(limits=1:(allLevels[[situation]][[5]]+5), breaks=allLevels[[situation]])
+histo = ggplot(data = histoData)+geom_jitter(aes(x=Levels, y=Guesses, colour=Condition),width=jitterAmts[[situation]],height=0, alpha=0.65)
+histo = histo + ggtitle(paste("Predictions against Level -", allLabels[[situation]] ) ) + ylab("Predicted t-total") + xlab("t")
+histo = histo + scale_x_discrete(limits=1:((allLevels[[situation]][[5]])+ceiling(allLevels[[situation]][[5]]/25)), breaks=allLevels[[situation]])
 grid.arrange(socPlot, nonSocPlot, histo)
+
+
+if(experimentVersion == 1){
+  ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/Experiment1/", allLabels[[situation]], sep=""))
+}
+
+if(experimentVersion == 2){
+  ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/", allLabels[[situation]], sep=""))
+}
 
 #Calculating Errors
 #=======================================================
@@ -327,10 +374,8 @@ print(meanSquaredErrorNonSocial)
 #=======================================================
                 #Linear-Mixed Modeling
 #=======================================================
-partialFilteredData <- nonFilteredData
-for(i in 1:4){
-  partialFilteredData <- filterOutliers(partialFilteredData, i)
-}
-lmeDf <- partialFilteredData
-lmeDf <- makeLMECompatible(lmeDf)
+
+lmeDf <- makeLMECompatible(nonFilteredData)
 lme4::lmer(Guess ~ Context + Domain + Level + (1|Subject), data=lmeDf)
+
+

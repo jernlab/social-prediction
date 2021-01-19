@@ -30,20 +30,18 @@ filterOutliers<-function(experimentData, story){
   
   for(i in (1:5)){
     averages[[1]][[i]] = averages[[1]][[i]] / numGuessesPerLevel[[1]][[i]]
-  }
-  for(i in (1:5)){
     averages[[2]][[i]] = averages[[2]][[i]] / numGuessesPerLevel[[2]][[i]]
   }
   
   stdDevs <- list(c(1:5), c(1:5))
   
-  for(cond in (1:2)){
-    for(lvl in 1:5){
-      stdDevs[[cond]][[lvl]] = 3 * sd(unlist(allLevelsList[[cond]][[lvl]]))
-    }
+
+  for(lvl in 1:5){
+      stdDevs[[1]][[lvl]] = 3 * sd(unlist(allLevelsList[[1]][[lvl]]))
+      stdDevs[[2]][[lvl]] = 3 * sd(unlist(allLevelsList[[2]][[lvl]]))
   }
   
-  print(stdDevs)
+  #print(stdDevs)
   
   filData <- experimentData[0,]
   
@@ -64,9 +62,15 @@ filterOutliers<-function(experimentData, story){
   return(filData)
 }
 
-filterOutliersALL<-function(startExperData){
+
+
+
+
+computeAllOutliers<-function(startExperData){
   
   experimentData <- startExperData
+  numTotalGuesses <- length(experimentData[[1]])
+  includeOrNot <- matrix(rep(1, 4*numTotalGuesses), nrow = numTotalGuesses)
   
   for(story in (1:4)){
     library(tidyverse)
@@ -75,7 +79,6 @@ filterOutliersALL<-function(startExperData){
     storyData <- experimentData %>% pull(3+story)
     groupNumbers <- experimentData %>% pull(3)
     conditions <- experimentData %>% pull(2)
-    numTotalGuesses <- length(storyData)
     socialLevelList <- list(list(),list(),list(),list(),list())
     nsocialLevelList<- list(list(),list(),list(),list(),list())
     allLevelsList <- list(socialLevelList, nsocialLevelList)
@@ -104,13 +107,13 @@ filterOutliersALL<-function(startExperData){
     
     stdDevs <- list(c(1:5), c(1:5))
     
-    for(cond in (1:2)){
-      for(lvl in 1:5){
-        stdDevs[[cond]][[lvl]] = 3 * sd(unlist(allLevelsList[[cond]][[lvl]]))
-      }
-    }
     
-    print(stdDevs)
+
+      for(lvl in 1:5){
+        stdDevs[[1]][[lvl]] = 3 * sd(unlist(allLevelsList[[1]][[lvl]]))
+        stdDevs[[2]][[lvl]] = 3 * sd(unlist(allLevelsList[[2]][[lvl]]))
+      }
+    
     
     filData <- experimentData[0,]
     
@@ -121,15 +124,18 @@ filterOutliersALL<-function(startExperData){
       
       if(!identical(as.character(cond), "Social"))isSocial <- 2
       
+      #isSocial is a 1 or 2 depending on if this subject was/n't in the social condition.
       guess <- storyData[[i]]
-      meanForStory <-averages[[cond]][[storyLevel]]
-      stdForStory <- stdDevs[[cond]][[storyLevel]]
-      if(abs(guess - meanForStory) <= stdForStory) filData <- rbind(filData,experimentData[i,])
+      meanForStory <-averages[[isSocial]][[storyLevel]]
+      #print(meanForStory)
+      stdForStory <- stdDevs[[isSocial]][[storyLevel]]
+      
+      if(abs(guess - meanForStory) > stdForStory) includeOrNot[i,story] = -1
       
     }
-    experimentData <-filData
+    
   }
   
   
-  return(filData)
+  return(includeOrNot)
 }
