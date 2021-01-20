@@ -1,6 +1,8 @@
-source('~/research/filterOutliers.r')
-source('~/research/computeModelPosterior.r')
-source('~/research/makeLMECompatible.r')
+source('filterOutliers.r')
+source('computeModelPosterior.r')
+source('makeLMECompatible.r')
+
+library(ggplot2)
 
 #################################################################################
 #################################################################################
@@ -21,10 +23,10 @@ if(experimentVersion == 1){
                   c(2,4,8,16,30))    #Train
   #Cake= ,Bus = 0.8, Drives = 3.0 + , Train = 0.2,
   jitterAmts = c(2.0, 0.8, 3.0, 0.8)
-  
+
   #The maximum y-values for ggplots, dependent on situation/story
   yLimits<-list(
-    90,       # Cake,adj = 90 raw = 130 
+    90,       # Cake,adj = 90 raw = 130
     55,        # Bus, adj = 55  raw = 730
     510,      # Flash Drive, adj = 510  raw = 1060
     130        # Train, adj = 130 raw = 210
@@ -35,13 +37,13 @@ if(experimentVersion == 2){
                   c(2,5,10,15,21),  #Bus
                   c(5,28,57,96,125), #Flash Drive
                   c(1,2,4,6,7))    #Train
-  
+
   #Cake= ,Bus = 0.8, Drives = 3.0 + , Train = 0.2,
   jitterAmts = c(2.0, 0.8, 3.0, 0.2)
-  
+
   #The maximum y-values for ggplots, dependent on situation/story
   yLimits<-list(
-    100,       # Cake,adj = 125 raw = 125 
+    100,       # Cake,adj = 125 raw = 125
     43,        # Bus, adj = 50  raw = 65
     1100,      # Flash Drive, adj = 1100  raw = 2050
     40        # Train, adj = 40 raw = 405
@@ -78,19 +80,19 @@ axis.text.y = element_text(
 
 #Reading in the data for the chosen situation
 if(situation == 1){
-  t_total_info = read.csv("C:/Users/paynesc/Documents/research/finalCakeData.csv", header = FALSE)
+  t_total_info = read.csv("../dataFiles/finalCakeData.csv", header = FALSE)
 }
 if(situation == 2){
-  t_total_info = read.csv("C:/Users/paynesc/Documents/research/busData.csv", header = FALSE)
+  t_total_info = read.csv("../dataFiles/busData.csv", header = FALSE)
 }
 if(situation == 3){
-  t_total_info = read.csv("C:/Users/paynesc/Documents/research/flashDriveData.csv", header = FALSE)
+  t_total_info = read.csv("../dataFiles/flashDriveData.csv", header = FALSE)
 }
 if(situation == 4){
-  t_total_info = read.csv("C:/Users/paynesc/Documents/research/trainsData.csv", header = FALSE)
+  t_total_info = read.csv("../dataFiles/trainsData.csv", header = FALSE)
 }
 
-# t_total_info (the data from the csv file) is a 2 column vector. 
+# t_total_info (the data from the csv file) is a 2 column vector.
 # The first column ($V1) is a value and the second column ($V2)
 # is the probability associated with that value. (i.e t_total and p(t_total))
 # Ex:
@@ -110,7 +112,7 @@ gamma = 1 #Left over variable from implementation of the non-augmented model. Ig
 nvals = length(t_total_vals)
 
 #Vector of x-values for plotting
-x_vals<-c(1:t_total) 
+x_vals<-c(1:t_total)
 
 #Vector of y-values for plotting augmented model (social)
 y1_vals <- c(1:t_total)
@@ -131,75 +133,75 @@ lvl_list2 = c()
 
 # Algorithm/Prediction Making Explanation:
 # Predictions are made by choosing the t_total value at the median of the probability distribution
-# for posteriors. 
+# for posteriors.
 
 #For each t value, we will make a prediction
 for (i in (1:t_total)){
-  
-  
+
+
   # Within our possible t_total values, we find the index of the first value
   # greater than t (because the minimum predicted value cannot be less than
   # what has already been observed).
-  
+
   startPoint = 0
-  
+
   for (j in (1:nvals)){
     if(t_total_vals[j] >i){
       startPoint = j
       break
     }
   }
-  
+
   # If the startPoint is equal to 0, then we found no values of t_total that we
   # could select within the data set that would allow us to make a prediction;
   # thus we predict t_total to be t, as no evidence supports a higher prediction
-  
+
   if(startPoint == 0){
     y1_vals[i] = i
     y2_vals[i] = i
     next
-  } 
-  
+  }
+
   # Otherwise we calculate all posteriors from t_total_vals[startPoint] till the end of our data set,
   # find the median, and use the value at the median as the predicted t_total value.
   sum = 0
   sum2 = 0
   for (k in (startPoint: nvals)){
-    
+
     #Calculate posterior for augmented (social) model
     post = computeModelPosterior_deriv(t_total_vals[k], i, gamma, t_total_info, situation)
-    
+
     #This simply makes sure the posteriors always start filling from the beginning of the post array
     all_post[k - startPoint + 1] = post
     sum= sum + post
-    
+
     #Calculate posterior for the non-augmented (non-social) model
     post2 = computeModelPosterior_deriv(t_total_vals[k], i, gamma, t_total_info, 0)
     all_post2[k - startPoint + 1] = post2
     sum2 = sum2 + post2
   }
-  
+
   #Calculate the t_total at the median of the posteriors for...
-  
-  
+
+
   #...The social prediction
   median_amnt = sum/2.0
   median_sum = 0
   post_index = 1
-  
+
   while(median_sum < median_amnt){
     median_sum = median_sum + all_post[post_index]
     post_index= post_index + 1
   }
-  
-  
+
+
   y1_vals[i] = t_total_vals[startPoint + post_index - 2]
-  
+
   #...The non-social prediction
   median_amnt = sum2/2.0
   median_sum = 0
   post_index = 1
-  
+
   while(median_sum < median_amnt){
     median_sum = median_sum + all_post2[post_index]
     post_index= post_index + 1
@@ -213,15 +215,15 @@ library(gridExtra)
 ###########################################################################
 #Processing Experimental Info per situation
 mean_95CI<-function(x){
-  return (mean_se(x, 1.96))  
+  return (mean_se(x, 1.96))
 }
 
 if(experimentVersion == 1){
-  nonFilteredData <- read.csv(file = "C:/Users/paynesc/Documents/research/4_7_2020Tidy.csv")
+  nonFilteredData <- read.csv(file = "../dataFiles/4_7_2020Tidy.csv")
   myData <- filterOutliers(nonFilteredData, situation)
 }
 if(experimentVersion == 2){
-  nonFilteredData <- read.csv(file = "C:/Users/paynesc/Documents/research/10_3_2020Tidy.csv")
+  nonFilteredData <- read.csv(file = "../dataFiles/10_3_2020Tidy.csv")
   myData <- filterOutliers(nonFilteredData, situation)
 }
 
@@ -259,19 +261,19 @@ lvl<-0             #The current level of situation we are calculating the averag
 # for(lvl in 1:5){
 #   avg = 0
 #   count = 0
-# 
+#
 #   for (i in 1:53) {
 #     if(myData[i,3] == lvl){
 #       avg = avg + myData[i,3+situation] # The columns in the data frame are
 #       count = count + 1
 #       avg_list = append(avg_list, myData[i,3 + situation])
 #       lvl_list = append(lvl_list, allLevels[[situation]][lvl])
-#       
+#
 #     }
-#     
+#
 #     avg = avg/count
 #     levelAvg[lvl] = avg
-#     
+#
 #   }}
 
 #Calculate the averages for each level of the story for the non-social case.
@@ -285,7 +287,7 @@ for(lvl in 1:5){
   socialVsNonsocial = as.character(myData[i,2]) #Stores whether current row is a non-social or social experiment result
   while(identical(socialVsNonsocial,"Non-Social")){
     if(myData[i,3] == lvl){
-      avg = avg + myData[i,3+situation] # The columns in the data frame are 
+      avg = avg + myData[i,3+situation] # The columns in the data frame are
       count = count + 1
       avg_list2 = append(avg_list2, myData[i,3 + situation])
       lvl_list2 = append(lvl_list2, allLevels[[situation]][lvl])
@@ -308,7 +310,7 @@ for(lvl in 1:5){
   socialVsNonsocial = as.character(myData[i,2]) #Stores whether current row is a non-social or social experiment result
   while(identical(socialVsNonsocial,"Social")){
     if(myData[i,3] == lvl){
-      avg = avg + myData[i,3+situation] # The columns in the data frame are 
+      avg = avg + myData[i,3+situation] # The columns in the data frame are
       count = count + 1
       avg_list = append(avg_list, myData[i,3 + situation])
       lvl_list = append(lvl_list, allLevels[[situation]][lvl])
@@ -324,10 +326,10 @@ for(lvl in 1:5){
 
 # predictionPlot = ggplot(mapping = aes(lvl_list, avg_list)) +xlab("t")+stat_summary(fun = mean, geom="point")+stat_summary(fun.data = mean_95CI, geom="errorbar")+ylab("Predicted t_total")+ggtitle(socialLabels[situation])+xlim(0, t_total)+coord_cartesian(ylim=c(0, yLimits[[situation]]))
 # predictionPlot = predictionPlot + geom_line(mapping = aes(x = x_vals,y =y1_vals), color="brown")
-# 
+#
 # nonSocPlot = ggplot(mapping=aes(lvl_list2, avg_list2))+stat_summary(fun = mean, geom="point")+stat_summary(fun.data = mean_95CI, geom="errorbar") +xlab("t")+ylab("Predicted t_total")+ggtitle(nonsocialLabels[situation])+xlim(0, t_total)+coord_cartesian(ylim=c(0, yLimits[[situation]]))
 # nonSocPlot = nonSocPlot + geom_line(mapping = aes(x=x_vals, y=y2_vals), color="blue")
-# 
+#
 # grid.arrange(predictionPlot, nonSocPlot)
 
 #Generating Experiment (box) vs Prediction (line) plots
@@ -362,17 +364,16 @@ histo = histo + scale_x_discrete(limits=1:((allLevels[[situation]][[5]])+ceiling
 histo = histo + plotFormatting
 grid.arrange(socPlot, nonSocPlot, histo)
 
-
 if(experimentVersion == 1){
-  ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/Experiment1/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/Experiment1/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
 }
 
 if(experimentVersion == 2){
-  ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("C:/Users/paynesc/Documents/research/Plots/PaperPlots/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
 }
 
 #Calculating Errors
@@ -402,5 +403,3 @@ print(meanSquaredErrorNonSocial)
 
 lmeDf <- makeLMECompatible(nonFilteredData)
 lme4::lmer(Guess ~ Context + Domain + Level + (1|Subject), data=lmeDf)
-
-
