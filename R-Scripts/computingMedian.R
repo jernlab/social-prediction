@@ -11,8 +11,8 @@ source('~/research/makeLMECompatible.r')
 #      2 -> Bus
 #      3 -> Drive
 #      4 -> Train
-situation<-3
-experimentVersion = 1
+situation<-4
+experimentVersion = 2
 #The t-values for each situation, each situation's t-values are stored in their own vector
 if(experimentVersion == 1){
   allLevels<-list(c(10,20,35,50,70), #Cake
@@ -51,7 +51,29 @@ if(experimentVersion == 2){
 #The value of t_total we want to generate predictions for
 t_total = allLevels[[situation]][[5]] + 1
 
-
+plotFormatting <- theme(plot.title = element_text(
+  size = 25,
+  face = "bold"
+), axis.title.x = element_text(
+  size = 15
+),
+axis.title.y = element_text(
+  size = 15
+),
+legend.text = element_text(
+  size = 12
+),
+legend.title = element_text(
+  size = 15,
+  face = "bold"
+),
+axis.text.x = element_text(
+  size = 10
+),
+axis.text.y = element_text(
+  size = 10
+)
+)
 
 
 #Reading in the data for the chosen situation
@@ -317,6 +339,7 @@ socTibble = tibble(lvl_list, avg_list)
 socPlot = ggplot(socTibble, aes(x = factor(lvl_list), y = avg_list))+ xlab("t") +ylab("Predicted t-total") + ggtitle(socialLabels[situation])
 socPlot = socPlot + geom_boxplot()+coord_cartesian(ylim=c(0,yLimits[[situation]]))
 socPlot = socPlot + geom_line(inherit.aes = FALSE, data = tibble(x_vals, y1_vals), aes(x_vals, y1_vals)) + scale_x_discrete(limits=1:allLevels[[situation]][[5]], breaks=allLevels[[situation]])
+socPlot = socPlot + plotFormatting
 #=======================================================
                       #Non-Social
 #=======================================================
@@ -324,6 +347,7 @@ nonSocTibble = tibble(lvl_list2, avg_list2)
 nonSocPlot = ggplot(nonSocTibble, aes(x = factor(lvl_list2), y = avg_list2)) + ggtitle(nonsocialLabels[situation])
 nonSocPlot = nonSocPlot + geom_boxplot()+ xlab("t") +ylab("Predicted t-total")+coord_cartesian(ylim=c(0,yLimits[[situation]]))
 nonSocPlot = nonSocPlot + geom_line(inherit.aes = FALSE, data = data.frame(x_vals, y2_vals), aes(x_vals, y2_vals)) + scale_x_discrete(limits=1:allLevels[[situation]][[5]], breaks=allLevels[[situation]])
+nonSocPlot = nonSocPlot + plotFormatting
 
 #Generating Social vs Non-Social Histogram
 numNonSocialGuesses = length(lvl_list2)
@@ -335,6 +359,7 @@ histoData = data.frame("Levels" = append(lvl_list2, lvl_list), "Guesses" = appen
 histo = ggplot(data = histoData)+geom_jitter(aes(x=Levels, y=Guesses, colour=Condition),width=jitterAmts[[situation]],height=0, alpha=0.65)
 histo = histo + ggtitle(paste("Predictions against Level -", allLabels[[situation]] ) ) + ylab("Predicted t-total") + xlab("t")
 histo = histo + scale_x_discrete(limits=1:((allLevels[[situation]][[5]])+ceiling(allLevels[[situation]][[5]]/25)), breaks=allLevels[[situation]])
+histo = histo + plotFormatting
 grid.arrange(socPlot, nonSocPlot, histo)
 
 

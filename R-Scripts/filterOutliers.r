@@ -53,8 +53,8 @@ filterOutliers<-function(experimentData, story){
     if(!identical(as.character(cond), "Social"))isSocial <- 2
     
     guess <- storyData[[i]]
-    meanForStory <-averages[[cond]][[storyLevel]]
-    stdForStory <- stdDevs[[cond]][[storyLevel]]
+    meanForStory <-averages[[isSocial]][[storyLevel]]
+    stdForStory <- stdDevs[[isSocial]][[storyLevel]]
     if(abs(guess - meanForStory) <= stdForStory) filData <- rbind(filData,experimentData[i,])
     
   }
