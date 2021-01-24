@@ -399,9 +399,10 @@ for(i in 1:5){
 }
 print(meanSquaredErrorNonSocial)
 #=======================================================
-                #Linear-Mixed Modeling
+                #Linear Mixed Modeling
 #=======================================================
 
 lmeDf <- makeLMECompatible(nonFilteredData)
 m <- lmer(Guess ~ Context + Domain + Level + (1+Domain|Subject), data=lmeDf)
 print(summary(m))
+print(confint(m,method="Wald"))
