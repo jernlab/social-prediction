@@ -3,6 +3,7 @@ source('computeModelPosterior.r')
 source('makeLMECompatible.r')
 
 library(ggplot2)
+library(lmerTest)
 
 #################################################################################
 #################################################################################
@@ -351,29 +352,29 @@ nonSocPlot = nonSocPlot + geom_boxplot()+ xlab("t") +ylab("Predicted t-total")+c
 nonSocPlot = nonSocPlot + geom_line(inherit.aes = FALSE, data = data.frame(x_vals, y2_vals), aes(x_vals, y2_vals)) + scale_x_discrete(limits=1:allLevels[[situation]][[5]], breaks=allLevels[[situation]])
 nonSocPlot = nonSocPlot + plotFormatting
 
-#Generating Social vs Non-Social Histogram
+#Generating Social vs Non-Social Scatter plot
 numNonSocialGuesses = length(lvl_list2)
 numSocialGuesses = length(lvl_list)
 
 #Best widths for jitter
 #Cake= ,Bus = 0.8, Drives = 3.0 + , Train = 0.2,
-histoData = data.frame("Levels" = append(lvl_list2, lvl_list), "Guesses" = append(avg_list2, avg_list), "Condition" = append(rep("Non-Social", numNonSocialGuesses), rep("Social", numSocialGuesses)))
-histo = ggplot(data = histoData)+geom_jitter(aes(x=Levels, y=Guesses, colour=Condition),width=jitterAmts[[situation]],height=0, alpha=0.65)
-histo = histo + ggtitle(paste("Predictions against Level -", allLabels[[situation]] ) ) + ylab("Predicted t-total") + xlab("t")
-histo = histo + scale_x_discrete(limits=1:((allLevels[[situation]][[5]])+ceiling(allLevels[[situation]][[5]]/25)), breaks=allLevels[[situation]])
-histo = histo + plotFormatting
-grid.arrange(socPlot, nonSocPlot, histo)
+scatterData = data.frame("Levels" = append(lvl_list2, lvl_list), "Guesses" = append(avg_list2, avg_list), "Condition" = append(rep("Non-Social", numNonSocialGuesses), rep("Social", numSocialGuesses)))
+scatter = ggplot(data = scatterData)+geom_jitter(aes(x=Levels, y=Guesses, colour=Condition),width=jitterAmts[[situation]],height=0, alpha=0.65)
+scatter = scatter + ggtitle(paste("Predictions against Level -", allLabels[[situation]] ) ) + ylab("Predicted t-total") + xlab("t")
+scatter = scatter + scale_x_discrete(limits=1:((allLevels[[situation]][[5]])+ceiling(allLevels[[situation]][[5]]/25)), breaks=allLevels[[situation]])
+scatter = scatter + plotFormatting
+grid.arrange(socPlot, nonSocPlot, scatter)
 
 if(experimentVersion == 1){
   ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
   ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_scatter.pdf", sep=""),plot=histo,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
 }
 
 if(experimentVersion == 2){
   ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
   ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_histo.pdf", sep=""),plot=histo,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_scatter.pdf", sep=""),plot=histo,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
 }
 
 #Calculating Errors
@@ -402,4 +403,5 @@ print(meanSquaredErrorNonSocial)
 #=======================================================
 
 lmeDf <- makeLMECompatible(nonFilteredData)
-lme4::lmer(Guess ~ Context + Domain + Level + (1|Subject), data=lmeDf)
+m <- lmer(Guess ~ Context + Domain + Level + (1+Domain|Subject), data=lmeDf)
+print(summary(m))
