@@ -2,8 +2,8 @@ Raw data
 --------
 
 Contains raw data files in a more human-readable format. Each experiment's data is spread across two files, one for each condition:
-* `social.xlsx`: Data from the social condition.
-* `nonsocial.xlsx`: Data from the non-social condition.
+* `*_social.xlsx`: Data from the social condition.
+* `*_nonsocial.xlsx`: Data from the non-social condition.
 
 Each spreadsheet contains the following sheets:
 * *Full data*: All the raw data collected by the experiment.

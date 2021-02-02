@@ -368,13 +368,13 @@ grid.arrange(socPlot, nonSocPlot, scatter)
 if(experimentVersion == 1){
   ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
   ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_scatter.pdf", sep=""),plot=histo,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_scatter.pdf", sep=""),plot=scatter,path=paste("Plots/Experiment1/", allLabels[[situation]], sep=""))
 }
 
 if(experimentVersion == 2){
   ggsave(paste(allLabels[[situation]], "_nonsocial.pdf", sep=""),plot=nonSocPlot,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
   ggsave(paste(allLabels[[situation]], "_social.pdf", sep=""),plot=socPlot,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
-  ggsave(paste(allLabels[[situation]], "_scatter.pdf", sep=""),plot=histo,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
+  ggsave(paste(allLabels[[situation]], "_scatter.pdf", sep=""),plot=scatter,path=paste("Plots/Experiment2/", allLabels[[situation]], sep=""))
 }
 
 #Calculating Errors
