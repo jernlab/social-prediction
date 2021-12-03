@@ -1,0 +1,221 @@
+,type,name,label,value,showif,block_order,item_order,class,choice1,choice2
+0,calculate,calculate_cake,,"randOrder <- c()
+numContext <- 2
+context <- c(1:2)
+randOrder <- sample(context)
+jsonlite::toJSON(randOrder)",,A,,,,
+1,note,cakeL1QR0,"<h4>A cake has been baking in an oven for <b>10 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+2,"rating_button 1,7,1",cakeL1C1R0,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 1,A,,,Not at all,Very
+3,"rating_button 1,7,1",cakeL1C2R0,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 2,A,,,Not at all,Very
+4,note,hrcake1,<hr>,,,A,,,,
+5,note,cakeL1QR1,"<h4>A cake has been baking in an oven for <b>10 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+6,"rating_button 1,7,1",cakeL1C1R1,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 1,A,,,Not at all,Very
+7,"rating_button 1,7,1",cakeL1C2R1,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 2,A,,,Not at all,Very
+8,note,hrcake2,<hr>,,,A,,,,
+9,submit,continue0,Continue,,,A,,,,
+10,note,cakeL2QR0,"<h4>A cake has been baking in an oven for <b>20 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+11,"rating_button 1,7,1",cakeL2C1R0,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 1,A,,,Not at all,Very
+12,"rating_button 1,7,1",cakeL2C2R0,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 2,A,,,Not at all,Very
+13,note,hrcake3,<hr>,,,A,,,,
+14,note,cakeL2QR1,"<h4>A cake has been baking in an oven for <b>20 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+15,"rating_button 1,7,1",cakeL2C1R1,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 1,A,,,Not at all,Very
+16,"rating_button 1,7,1",cakeL2C2R1,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 2,A,,,Not at all,Very
+17,note,hrcake4,<hr>,,,A,,,,
+18,submit,continue1,Continue,,,A,,,,
+19,note,cakeL3QR0,"<h4>A cake has been baking in an oven for <b>35 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+20,"rating_button 1,7,1",cakeL3C1R0,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 1,A,,,Not at all,Very
+21,"rating_button 1,7,1",cakeL3C2R0,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 2,A,,,Not at all,Very
+22,note,hrcake5,<hr>,,,A,,,,
+23,note,cakeL3QR1,"<h4>A cake has been baking in an oven for <b>35 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+24,"rating_button 1,7,1",cakeL3C1R1,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 1,A,,,Not at all,Very
+25,"rating_button 1,7,1",cakeL3C2R1,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 2,A,,,Not at all,Very
+26,note,hrcake6,<hr>,,,A,,,,
+27,submit,continue2,Continue,,,A,,,,
+28,note,cakeL4QR0,"<h4>A cake has been baking in an oven for <b>50 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+29,"rating_button 1,7,1",cakeL4C1R0,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 1,A,,,Not at all,Very
+30,"rating_button 1,7,1",cakeL4C2R0,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 2,A,,,Not at all,Very
+31,note,hrcake7,<hr>,,,A,,,,
+32,note,cakeL4QR1,"<h4>A cake has been baking in an oven for <b>50 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+33,"rating_button 1,7,1",cakeL4C1R1,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 1,A,,,Not at all,Very
+34,"rating_button 1,7,1",cakeL4C2R1,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 2,A,,,Not at all,Very
+35,note,hrcake8,<hr>,,,A,,,,
+36,submit,continue3,Continue,,,A,,,,
+37,note,cakeL5QR0,"<h4>A cake has been baking in an oven for <b>70 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+38,"rating_button 1,7,1",cakeL5C1R0,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 1,A,,,Not at all,Very
+39,"rating_button 1,7,1",cakeL5C2R0,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[1] == 2,A,,,Not at all,Very
+40,note,hrcake9,<hr>,,,A,,,,
+41,note,cakeL5QR1,"<h4>A cake has been baking in an oven for <b>70 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+42,"rating_button 1,7,1",cakeL5C1R1,the person who made the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 1,A,,,Not at all,Very
+43,"rating_button 1,7,1",cakeL5C2R1,someone who didn’t make the cake is leaning against the oven.,,jsonlite::fromJSON(calculate_cake)[2] == 2,A,,,Not at all,Very
+44,note,hrcake10,<hr>,,,A,,,,
+45,submit,continue4,Continue,,,A,,,,
+46,calculate,calculate_movie,,"randOrder <- c()
+numContext <- 2
+context <- c(1:2)
+randOrder <- sample(context)
+jsonlite::toJSON(randOrder)",,B,,,,
+47,note,movieL1QR0,"<h4>A movie has been playing for <b>30 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+48,"rating_button 1,7,1",movieL1C1R0,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[1] == 1,B,,,Not at all,Very
+49,"rating_button 1,7,1",movieL1C2R0,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[1] == 2,B,,,Not at all,Very
+50,note,hrmovie1,<hr>,,,B,,,,
+51,note,movieL1QR1,"<h4>A movie has been playing for <b>30 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+52,"rating_button 1,7,1",movieL1C1R1,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[2] == 1,B,,,Not at all,Very
+53,"rating_button 1,7,1",movieL1C2R1,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[2] == 2,B,,,Not at all,Very
+54,note,hrmovie2,<hr>,,,B,,,,
+55,submit,continue5,Continue,,,B,,,,
+56,note,movieL2QR0,"<h4>A movie has been playing for <b>45 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+57,"rating_button 1,7,1",movieL2C1R0,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[1] == 1,B,,,Not at all,Very
+58,"rating_button 1,7,1",movieL2C2R0,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[1] == 2,B,,,Not at all,Very
+59,note,hrmovie3,<hr>,,,B,,,,
+60,note,movieL2QR1,"<h4>A movie has been playing for <b>45 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+61,"rating_button 1,7,1",movieL2C1R1,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[2] == 1,B,,,Not at all,Very
+62,"rating_button 1,7,1",movieL2C2R1,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[2] == 2,B,,,Not at all,Very
+63,note,hrmovie4,<hr>,,,B,,,,
+64,submit,continue6,Continue,,,B,,,,
+65,note,movieL3QR0,"<h4>A movie has been playing for <b>60 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+66,"rating_button 1,7,1",movieL3C1R0,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[1] == 1,B,,,Not at all,Very
+67,"rating_button 1,7,1",movieL3C2R0,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[1] == 2,B,,,Not at all,Very
+68,note,hrmovie5,<hr>,,,B,,,,
+69,note,movieL3QR1,"<h4>A movie has been playing for <b>60 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+70,"rating_button 1,7,1",movieL3C1R1,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[2] == 1,B,,,Not at all,Very
+71,"rating_button 1,7,1",movieL3C2R1,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[2] == 2,B,,,Not at all,Very
+72,note,hrmovie6,<hr>,,,B,,,,
+73,submit,continue7,Continue,,,B,,,,
+74,note,movieL4QR0,"<h4>A movie has been playing for <b>85 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+75,"rating_button 1,7,1",movieL4C1R0,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[1] == 1,B,,,Not at all,Very
+76,"rating_button 1,7,1",movieL4C2R0,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[1] == 2,B,,,Not at all,Very
+77,note,hrmovie7,<hr>,,,B,,,,
+78,note,movieL4QR1,"<h4>A movie has been playing for <b>85 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+79,"rating_button 1,7,1",movieL4C1R1,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[2] == 1,B,,,Not at all,Very
+80,"rating_button 1,7,1",movieL4C2R1,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[2] == 2,B,,,Not at all,Very
+81,note,hrmovie8,<hr>,,,B,,,,
+82,submit,continue8,Continue,,,B,,,,
+83,note,movieL5QR0,"<h4>A movie has been playing for <b>100 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+84,"rating_button 1,7,1",movieL5C1R0,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[1] == 1,B,,,Not at all,Very
+85,"rating_button 1,7,1",movieL5C2R0,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[1] == 2,B,,,Not at all,Very
+86,note,hrmovie9,<hr>,,,B,,,,
+87,note,movieL5QR1,"<h4>A movie has been playing for <b>100 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+88,"rating_button 1,7,1",movieL5C1R1,exit the movie's showroom.,,jsonlite::fromJSON(calculate_movie)[2] == 1,B,,,Not at all,Very
+89,"rating_button 1,7,1",movieL5C2R1,exit the showroom of a movie next-door.,,jsonlite::fromJSON(calculate_movie)[2] == 2,B,,,Not at all,Very
+90,note,hrmovie10,<hr>,,,B,,,,
+91,submit,continue9,Continue,,,B,,,,
+92,calculate,calculate_podcast,,"randOrder <- c()
+numContext <- 2
+context <- c(1:3)
+randOrder <- sample(context)
+jsonlite::toJSON(randOrder)",,C,,,,
+93,note,podcastL1QR0,"<h4>Someone has been listening to a podcast for <b>15 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+94,"rating_button 1,7,1",podcastL1C1R0,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[1] == 1,C,,,Not at all,Very
+95,"rating_button 1,7,1",podcastL1C2R0,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[1] == 2,C,,,Not at all,Very
+96,"rating_button 1,7,1",podcastL1C3R0,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[1] == 3,C,,,Not at all,Very
+97,note,hrpodcast1,<hr>,,,C,,,,
+98,note,podcastL1QR1,"<h4>Someone has been listening to a podcast for <b>15 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+99,"rating_button 1,7,1",podcastL1C1R1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[2] == 1,C,,,Not at all,Very
+100,"rating_button 1,7,1",podcastL1C2R1,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[2] == 2,C,,,Not at all,Very
+101,"rating_button 1,7,1",podcastL1C3R1,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[2] == 3,C,,,Not at all,Very
+102,note,hrpodcast2,<hr>,,,C,,,,
+103,note,podcastL1QR2,"<h4>Someone has been listening to a podcast for <b>15 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+104,"rating_button 1,7,1",podcastL1C1R2,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[3] == 1,C,,,Not at all,Very
+105,"rating_button 1,7,1",podcastL1C2R2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[3] == 2,C,,,Not at all,Very
+106,"rating_button 1,7,1",podcastL1C3R2,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[3] == 3,C,,,Not at all,Very
+107,note,hrpodcast3,<hr>,,,C,,,,
+108,submit,continue10,Continue,,,C,,,,
+109,note,podcastL2QR0,"<h4>Someone has been listening to a podcast for <b>30 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+110,"rating_button 1,7,1",podcastL2C1R0,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[1] == 1,C,,,Not at all,Very
+111,"rating_button 1,7,1",podcastL2C2R0,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[1] == 2,C,,,Not at all,Very
+112,"rating_button 1,7,1",podcastL2C3R0,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[1] == 3,C,,,Not at all,Very
+113,note,hrpodcast4,<hr>,,,C,,,,
+114,note,podcastL2QR1,"<h4>Someone has been listening to a podcast for <b>30 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+115,"rating_button 1,7,1",podcastL2C1R1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[2] == 1,C,,,Not at all,Very
+116,"rating_button 1,7,1",podcastL2C2R1,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[2] == 2,C,,,Not at all,Very
+117,"rating_button 1,7,1",podcastL2C3R1,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[2] == 3,C,,,Not at all,Very
+118,note,hrpodcast5,<hr>,,,C,,,,
+119,note,podcastL2QR2,"<h4>Someone has been listening to a podcast for <b>30 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+120,"rating_button 1,7,1",podcastL2C1R2,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[3] == 1,C,,,Not at all,Very
+121,"rating_button 1,7,1",podcastL2C2R2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[3] == 2,C,,,Not at all,Very
+122,"rating_button 1,7,1",podcastL2C3R2,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[3] == 3,C,,,Not at all,Very
+123,note,hrpodcast6,<hr>,,,C,,,,
+124,submit,continue11,Continue,,,C,,,,
+125,note,podcastL3QR0,"<h4>Someone has been listening to a podcast for <b>55 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+126,"rating_button 1,7,1",podcastL3C1R0,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[1] == 1,C,,,Not at all,Very
+127,"rating_button 1,7,1",podcastL3C2R0,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[1] == 2,C,,,Not at all,Very
+128,"rating_button 1,7,1",podcastL3C3R0,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[1] == 3,C,,,Not at all,Very
+129,note,hrpodcast7,<hr>,,,C,,,,
+130,note,podcastL3QR1,"<h4>Someone has been listening to a podcast for <b>55 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+131,"rating_button 1,7,1",podcastL3C1R1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[2] == 1,C,,,Not at all,Very
+132,"rating_button 1,7,1",podcastL3C2R1,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[2] == 2,C,,,Not at all,Very
+133,"rating_button 1,7,1",podcastL3C3R1,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[2] == 3,C,,,Not at all,Very
+134,note,hrpodcast8,<hr>,,,C,,,,
+135,note,podcastL3QR2,"<h4>Someone has been listening to a podcast for <b>55 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+136,"rating_button 1,7,1",podcastL3C1R2,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[3] == 1,C,,,Not at all,Very
+137,"rating_button 1,7,1",podcastL3C2R2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[3] == 2,C,,,Not at all,Very
+138,"rating_button 1,7,1",podcastL3C3R2,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[3] == 3,C,,,Not at all,Very
+139,note,hrpodcast9,<hr>,,,C,,,,
+140,submit,continue12,Continue,,,C,,,,
+141,note,podcastL4QR0,"<h4>Someone has been listening to a podcast for <b>75 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+142,"rating_button 1,7,1",podcastL4C1R0,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[1] == 1,C,,,Not at all,Very
+143,"rating_button 1,7,1",podcastL4C2R0,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[1] == 2,C,,,Not at all,Very
+144,"rating_button 1,7,1",podcastL4C3R0,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[1] == 3,C,,,Not at all,Very
+145,note,hrpodcast10,<hr>,,,C,,,,
+146,note,podcastL4QR1,"<h4>Someone has been listening to a podcast for <b>75 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+147,"rating_button 1,7,1",podcastL4C1R1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[2] == 1,C,,,Not at all,Very
+148,"rating_button 1,7,1",podcastL4C2R1,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[2] == 2,C,,,Not at all,Very
+149,"rating_button 1,7,1",podcastL4C3R1,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[2] == 3,C,,,Not at all,Very
+150,note,hrpodcast11,<hr>,,,C,,,,
+151,note,podcastL4QR2,"<h4>Someone has been listening to a podcast for <b>75 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+152,"rating_button 1,7,1",podcastL4C1R2,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[3] == 1,C,,,Not at all,Very
+153,"rating_button 1,7,1",podcastL4C2R2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[3] == 2,C,,,Not at all,Very
+154,"rating_button 1,7,1",podcastL4C3R2,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[3] == 3,C,,,Not at all,Very
+155,note,hrpodcast12,<hr>,,,C,,,,
+156,submit,continue13,Continue,,,C,,,,
+157,note,podcastL5QR0,"<h4>Someone has been listening to a podcast for <b>105 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+158,"rating_button 1,7,1",podcastL5C1R0,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[1] == 1,C,,,Not at all,Very
+159,"rating_button 1,7,1",podcastL5C2R0,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[1] == 2,C,,,Not at all,Very
+160,"rating_button 1,7,1",podcastL5C3R0,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[1] == 3,C,,,Not at all,Very
+161,note,hrpodcast13,<hr>,,,C,,,,
+162,note,podcastL5QR1,"<h4>Someone has been listening to a podcast for <b>105 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+163,"rating_button 1,7,1",podcastL5C1R1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[2] == 1,C,,,Not at all,Very
+164,"rating_button 1,7,1",podcastL5C2R1,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[2] == 2,C,,,Not at all,Very
+165,"rating_button 1,7,1",podcastL5C3R1,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[2] == 3,C,,,Not at all,Very
+166,note,hrpodcast14,<hr>,,,C,,,,
+167,note,podcastL5QR2,"<h4>Someone has been listening to a podcast for <b>105 minutes</b>. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+168,"rating_button 1,7,1",podcastL5C1R2,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,jsonlite::fromJSON(calculate_podcast)[3] == 1,C,,,Not at all,Very
+169,"rating_button 1,7,1",podcastL5C2R2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,jsonlite::fromJSON(calculate_podcast)[3] == 2,C,,,Not at all,Very
+170,"rating_button 1,7,1",podcastL5C3R2,"someone nearby says ""Hey, I like that podcast too. Cool.""",,jsonlite::fromJSON(calculate_podcast)[3] == 3,C,,,Not at all,Very
+171,note,hrpodcast15,<hr>,,,C,,,,
+172,submit,continue14,Continue,,,C,,,,

@@ -1,0 +1,159 @@
+,type,name,label,value,showif,block_order,item_order,class,choice1,choice2
+0,note,startScreen,"You are being invited to participate in a research study about human reasoning. This study is being conducted by Alan Jern, Ph.D., from the Department of Humanities, Social Sciences, and the Arts at Rose-Hulman Institute of Technology. There are no known risks or costs if you decide to participate in this research study. In this study, you will be asked to answer a few questions or make some judgments. There are no right or wrong answers. We are only interested in whether people tend to give similar answers. The information collected may not benefit you directly, but the information learned in this study could help us to better understand how people think and reason. The data from this study will be shared publicly, but your responses will be anonymized so that they cannot be linked to your identity. Your participation in this study is voluntary and you may leave at any time. By completing the survey, you are voluntarily agreeing to participate. If you have any questions about the study, please contact Alan Jern at jern@rose-hulman.edu. If you have any questions about your rights as a research subject or if you feel you’ve been placed at risk, you may contact the Institutional Reviewer, Daniel Morris, by phone at (812) 877-8314, or by e-mail at morris@rose-hulman.edu.",,,,,,,
+1,submit,startButton,Start,,,,,,,
+2,note,cakeL1QC1,"<h4>A cake has been baking in an oven for 10 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+3,"rating_button 1,7,1",cakeL1C1,The cake's baker is leaning against the stove.,,,A,,,Not at all,Very
+4,note,hrcake1,<hr>,,,A,,,,
+5,note,cakeL1QC2,"<h4>A cake has been baking in an oven for 10 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+6,"rating_button 1,7,1",cakeL1C2,"A visitor, who is not baking the cake, is leaning against the oven",,,A,,,Not at all,Very
+7,note,hrcake2,<hr>,,,A,,,,
+8,submit,continue0,Continue,,,A,,,,
+9,note,cakeL2QC1,"<h4>A cake has been baking in an oven for 20 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+10,"rating_button 1,7,1",cakeL2C1,The cake's baker is leaning against the stove.,,,A,,,Not at all,Very
+11,note,hrcake3,<hr>,,,A,,,,
+12,note,cakeL2QC2,"<h4>A cake has been baking in an oven for 20 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+13,"rating_button 1,7,1",cakeL2C2,"A visitor, who is not baking the cake, is leaning against the oven",,,A,,,Not at all,Very
+14,note,hrcake4,<hr>,,,A,,,,
+15,submit,continue1,Continue,,,A,,,,
+16,note,cakeL3QC1,"<h4>A cake has been baking in an oven for 35 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+17,"rating_button 1,7,1",cakeL3C1,The cake's baker is leaning against the stove.,,,A,,,Not at all,Very
+18,note,hrcake5,<hr>,,,A,,,,
+19,note,cakeL3QC2,"<h4>A cake has been baking in an oven for 35 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+20,"rating_button 1,7,1",cakeL3C2,"A visitor, who is not baking the cake, is leaning against the oven",,,A,,,Not at all,Very
+21,note,hrcake6,<hr>,,,A,,,,
+22,submit,continue2,Continue,,,A,,,,
+23,note,cakeL4QC1,"<h4>A cake has been baking in an oven for 50 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+24,"rating_button 1,7,1",cakeL4C1,The cake's baker is leaning against the stove.,,,A,,,Not at all,Very
+25,note,hrcake7,<hr>,,,A,,,,
+26,note,cakeL4QC2,"<h4>A cake has been baking in an oven for 50 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+27,"rating_button 1,7,1",cakeL4C2,"A visitor, who is not baking the cake, is leaning against the oven",,,A,,,Not at all,Very
+28,note,hrcake8,<hr>,,,A,,,,
+29,submit,continue3,Continue,,,A,,,,
+30,note,cakeL5QC1,"<h4>A cake has been baking in an oven for 70 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+31,"rating_button 1,7,1",cakeL5C1,The cake's baker is leaning against the stove.,,,A,,,Not at all,Very
+32,note,hrcake9,<hr>,,,A,,,,
+33,note,cakeL5QC2,"<h4>A cake has been baking in an oven for 70 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see...</h5></h4>",,,A,,,,
+34,"rating_button 1,7,1",cakeL5C2,"A visitor, who is not baking the cake, is leaning against the oven",,,A,,,Not at all,Very
+35,note,hrcake10,<hr>,,,A,,,,
+36,submit,continue4,Continue,,,A,,,,
+37,note,movieL1QC1,"<h4>A movie has been playing in a theatre and is currently 30 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+38,"rating_button 1,7,1",movieL1C1,exit the movie's showroom.,,,B,,,Not at all,Very
+39,note,hrmovie1,<hr>,,,B,,,,
+40,note,movieL1QC2,"<h4>A movie has been playing in a theatre and is currently 30 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+41,"rating_button 1,7,1",movieL1C2,exit the showroom of a movie next-door,,,B,,,Not at all,Very
+42,note,hrmovie2,<hr>,,,B,,,,
+43,submit,continue5,Continue,,,B,,,,
+44,note,movieL2QC1,"<h4>A movie has been playing in a theatre and is currently 45 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+45,"rating_button 1,7,1",movieL2C1,exit the movie's showroom.,,,B,,,Not at all,Very
+46,note,hrmovie3,<hr>,,,B,,,,
+47,note,movieL2QC2,"<h4>A movie has been playing in a theatre and is currently 45 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+48,"rating_button 1,7,1",movieL2C2,exit the showroom of a movie next-door,,,B,,,Not at all,Very
+49,note,hrmovie4,<hr>,,,B,,,,
+50,submit,continue6,Continue,,,B,,,,
+51,note,movieL3QC1,"<h4>A movie has been playing in a theatre and is currently 60 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+52,"rating_button 1,7,1",movieL3C1,exit the movie's showroom.,,,B,,,Not at all,Very
+53,note,hrmovie5,<hr>,,,B,,,,
+54,note,movieL3QC2,"<h4>A movie has been playing in a theatre and is currently 60 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+55,"rating_button 1,7,1",movieL3C2,exit the showroom of a movie next-door,,,B,,,Not at all,Very
+56,note,hrmovie6,<hr>,,,B,,,,
+57,submit,continue7,Continue,,,B,,,,
+58,note,movieL4QC1,"<h4>A movie has been playing in a theatre and is currently 85 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+59,"rating_button 1,7,1",movieL4C1,exit the movie's showroom.,,,B,,,Not at all,Very
+60,note,hrmovie7,<hr>,,,B,,,,
+61,note,movieL4QC2,"<h4>A movie has been playing in a theatre and is currently 85 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+62,"rating_button 1,7,1",movieL4C2,exit the showroom of a movie next-door,,,B,,,Not at all,Very
+63,note,hrmovie8,<hr>,,,B,,,,
+64,submit,continue8,Continue,,,B,,,,
+65,note,movieL5QC1,"<h4>A movie has been playing in a theatre and is currently 100 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+66,"rating_button 1,7,1",movieL5C1,exit the movie's showroom.,,,B,,,Not at all,Very
+67,note,hrmovie9,<hr>,,,B,,,,
+68,note,movieL5QC2,"<h4>A movie has been playing in a theatre and is currently 100 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now see 10 people...</h5></h4>",,,B,,,,
+69,"rating_button 1,7,1",movieL5C2,exit the showroom of a movie next-door,,,B,,,Not at all,Very
+70,note,hrmovie10,<hr>,,,B,,,,
+71,submit,continue9,Continue,,,B,,,,
+72,note,podcastL1QC1,"<h4>Someone has been listening to a podcast for 30 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+73,"rating_button 1,7,1",podcastL1C1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,,C,,,Not at all,Very
+74,note,hrpodcast1,<hr>,,,C,,,,
+75,note,podcastL1QC2,"<h4>Someone has been listening to a podcast for 30 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+76,"rating_button 1,7,1",podcastL1C2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,,C,,,Not at all,Very
+77,note,hrpodcast2,<hr>,,,C,,,,
+78,note,podcastL1QC3,"<h4>Someone has been listening to a podcast for 30 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+79,"rating_button 1,7,1",podcastL1C3,"a nearby pedestrian say 'Hey, I like that podcast too. Cool.'",,,C,,,Not at all,Very
+80,note,hrpodcast3,<hr>,,,C,,,,
+81,submit,continue10,Continue,,,C,,,,
+82,note,podcastL2QC1,"<h4>Someone has been listening to a podcast for 60 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+83,"rating_button 1,7,1",podcastL2C1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,,C,,,Not at all,Very
+84,note,hrpodcast4,<hr>,,,C,,,,
+85,note,podcastL2QC2,"<h4>Someone has been listening to a podcast for 60 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+86,"rating_button 1,7,1",podcastL2C2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,,C,,,Not at all,Very
+87,note,hrpodcast5,<hr>,,,C,,,,
+88,note,podcastL2QC3,"<h4>Someone has been listening to a podcast for 60 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+89,"rating_button 1,7,1",podcastL2C3,"a nearby pedestrian say 'Hey, I like that podcast too. Cool.'",,,C,,,Not at all,Very
+90,note,hrpodcast6,<hr>,,,C,,,,
+91,submit,continue11,Continue,,,C,,,,
+92,note,podcastL3QC1,"<h4>Someone has been listening to a podcast for 80 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+93,"rating_button 1,7,1",podcastL3C1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,,C,,,Not at all,Very
+94,note,hrpodcast7,<hr>,,,C,,,,
+95,note,podcastL3QC2,"<h4>Someone has been listening to a podcast for 80 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+96,"rating_button 1,7,1",podcastL3C2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,,C,,,Not at all,Very
+97,note,hrpodcast8,<hr>,,,C,,,,
+98,note,podcastL3QC3,"<h4>Someone has been listening to a podcast for 80 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+99,"rating_button 1,7,1",podcastL3C3,"a nearby pedestrian say 'Hey, I like that podcast too. Cool.'",,,C,,,Not at all,Very
+100,note,hrpodcast9,<hr>,,,C,,,,
+101,submit,continue12,Continue,,,C,,,,
+102,note,podcastL4QC1,"<h4>Someone has been listening to a podcast for 95 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+103,"rating_button 1,7,1",podcastL4C1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,,C,,,Not at all,Very
+104,note,hrpodcast10,<hr>,,,C,,,,
+105,note,podcastL4QC2,"<h4>Someone has been listening to a podcast for 95 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+106,"rating_button 1,7,1",podcastL4C2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,,C,,,Not at all,Very
+107,note,hrpodcast11,<hr>,,,C,,,,
+108,note,podcastL4QC3,"<h4>Someone has been listening to a podcast for 95 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+109,"rating_button 1,7,1",podcastL4C3,"a nearby pedestrian say 'Hey, I like that podcast too. Cool.'",,,C,,,Not at all,Very
+110,note,hrpodcast12,<hr>,,,C,,,,
+111,submit,continue13,Continue,,,C,,,,
+112,note,podcastL5QC1,"<h4>Someone has been listening to a podcast for 110 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+113,"rating_button 1,7,1",podcastL5C1,"the podcast host say ""Welp, that's all we planned to discuss this week!""",,,C,,,Not at all,Very
+114,note,hrpodcast13,<hr>,,,C,,,,
+115,note,podcastL5QC2,"<h4>Someone has been listening to a podcast for 110 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+116,"rating_button 1,7,1",podcastL5C2,"the podcast host ask the rest of the panel ""Is there anything else you all wanted to discuss?""",,,C,,,Not at all,Very
+117,note,hrpodcast14,<hr>,,,C,,,,
+118,note,podcastL5QC3,"<h4>Someone has been listening to a podcast for 110 minutes. 
+ <h5>On the following scale, how likely do you think it would be to now hear...</h5></h4>",,,C,,,,
+119,"rating_button 1,7,1",podcastL5C3,"a nearby pedestrian say 'Hey, I like that podcast too. Cool.'",,,C,,,Not at all,Very
+120,note,hrpodcast15,<hr>,,,C,,,,
+121,submit,continue14,Continue,,,C,,,,
+122,text,attentionCheck,This is an attention check,,,,,,,
