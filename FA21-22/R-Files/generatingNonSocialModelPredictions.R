@@ -66,16 +66,14 @@ computeModelPosterior_deriv<-function(t_total, t, t_total_info, flag){
 }
 
 generateNonSocialPrediction <- function(t, story=0){
-  data_file_path <- "C:\\Users\\paynesc\\Documents\\research\\Attempt2\\data\\Podcast\\podcastProbs.csv"
-  #data <-  read.csv(data_file_path, header = TRUE)
-  data <-  probs
-  maxTtotal <- max(data$runtime)
+  dataP <-  probs
+  maxTtotal <- max(dataP$runtime)
   x_space <- c(t:maxTtotal)
   idx <- 1
   
   allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = rep(maxTtotal-t))
   for(i in x_space){
-    probTtotalGivenT <- computeModelPosterior_deriv(i, t, data, 5)
+    probTtotalGivenT <- computeModelPosterior_deriv(i, t, dataP, 5)
     allTtotalProbsGivenT$pTtotalGivenT[idx] <- probTtotalGivenT
     # print(probTtotalGivenT)
     idx <- idx + 1
@@ -125,8 +123,12 @@ generateMultipleNonSocialPredictions <- function(t, tMax, tMin=NULL){
   return(df)
 }
 
+#data_file_path <- "C:\\Users\\paynesc\\Documents\\research\\Attempt2\\data\\Podcast\\applePodcastFilteredProbs.RData"
+#data <-  read.csv(data_file_path, header = TRUE)
+#load(data_file_path)
+
 startTimestamp <- timestamp()
-df <- generateMultipleNonSocialPredictions(t=10,tMax=120, tMin=1)
+df <- generateMultipleNonSocialPredictions(t=10,tMax=110, tMin=1)
 endTimestamp <- timestamp()
 
 plt <- ggplot(df) + geom_line(mapping = aes(x=t, y=pred), color="blue", size=1.3) + ylab("Prediction") + ggtitle("Non-Social Podcast Duration Predictions") + theme(axis.title.x = element_text(size=20, face="bold"),
