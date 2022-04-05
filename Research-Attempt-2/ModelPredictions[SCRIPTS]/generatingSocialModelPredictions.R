@@ -1,0 +1,140 @@
+## =====================
+## =====================
+## FUNCTION DEFINITIONS
+## =====================
+## =====================
+computeModelPosterior<-function(t_total, t, t_total_info, contextRatingGivenT){
+  #t_total        : The value of t_total in P(t_total | t)
+  #t              : The value of t in P(t_total | t)
+  #gamma           : gamma parameter (Not used in generating these predictions, leftover from implementation of original model)
+  #t_total_info   : a Domain Size x 2 vector, 1st column are t_total values, 
+  #                 2nd is P(t_total)
+  #flag           : The story (cake, bus, drive, train) we're calculating posterior for
+  #                             1     2     3      4
+  
+  startIndex = 0
+  
+  #Vector of all t_total values
+  t_total_vals_vec = t_total_info[1]
+  
+  #Vector of all t_total_probs
+  t_total_probs_vec = t_total_info[2]
+  num_rows = nrow(t_total_vals_vec)
+  
+  for(i in (1:num_rows)){
+    if(t_total_info[i,1] >= t){
+      startIndex = i
+      break
+    }
+  }
+  
+  likelihood = contextRatingGivenT #* sum(t_total_probs_vec[c(startIndex:num_rows),])
+  
+  t_prior = 0
+  given_t_total_prior = 0
+  
+  #P(t) = sum of p(t_total)/t_total
+  t_prior = t_total_info[[2]][c(startIndex:num_rows)] / t_total_info[[1]][c(startIndex:num_rows)]
+  
+  for(i in (startIndex:num_rows)){
+    #t_prior = t_prior + (t_total_probs_vec[i,]/t_total_vals_vec[i,])
+    #Storing the t_total probability for the t_total passed as the function's parameter
+    if(t_total_vals_vec[i,] == t_total) given_t_total_prior = t_total_probs_vec[i,]
+  }
+  
+  
+  #Bayes Rules
+  return (likelihood * given_t_total_prior) #/ t_prior
+}
+
+
+## =====================
+## =====================
+##       ANALYSIS
+## =====================
+## =====================
+## Chose the Story to do data analysis on ##
+storyNum = 1
+
+inferred_cake_ratings <- read.csv("interpolatedCakeRatings.csv")
+inferred_movie_ratings <- read.csv("interpolatedMovieRatings.csv")
+inferred_podcast_ratings <- read.csv("interpolatedPodcastRatings.csv")
+
+inferred_cake_ratings$predicted_rating <- inferred_cake_ratings$predicted_rating/8
+inferred_movie_ratings$predicted_rating <- inferred_movie_ratings$predicted_rating/8
+inferred_podcast_ratings$predicted_rating <- inferred_podcast_ratings$predicted_rating/8
+
+storyRatings <- switch (storyNum,
+  inferred_cake_ratings,
+  inferred_movie_ratings,
+  inferred_podcast_ratings
+)
+
+stories <- c('cake','movie','podcast')
+story <- stories[storyNum]
+
+## T's used at each level for Cake, Movie, & Podcast respectively
+t_s <- list(c(10, 20, 35, 50, 70), c(30, 45, 60, 85, 100), c(15, 30, 55, 75, 105))
+
+storyTs <- t_s[[storyNum]]
+
+## Load the data
+t_totalProbs <- read.csv(paste(story,"Probs.csv",sep = ""))
+
+
+storyRatings$predicted_rating <- storyRatings$predicted_rating / 8
+
+maxTtoPredict <- max(storyTs + 5)
+
+socialPredictions <- data.frame(Level = c(1:maxTtoPredict), Prediction = c(1:maxTtoPredict))
+
+tsToPredict <- c(1:maxTtoPredict)
+
+maxIter <- max(t_totalProbs[1])
+maxTtotal <- max(t_totalProbs[1])
+## Iterate through levels of story
+for(t in tsToPredict){
+  x_space <- c(t:maxTtotal)
+  
+  ## Dataframe for storing computed posteriors
+  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = c(t:maxTtotal))
+  conRating <- storyRatings[[1]][t]
+  idx <- 1
+  
+  ## Generate P(t_total | t) for t=value of t at level, t_total = current t_total in the iteration 
+  for(i in x_space){
+    probTtotalGivenT <- computeModelPosterior(i, t, t_totalProbs, conRating)
+    allTtotalProbsGivenT$pTtotalGivenT[idx] <- probTtotalGivenT
+    # print(probTtotalGivenT)
+    idx <- idx + 1
+  }
+  
+  allTtotalProbsGivenT$pTtotalGivenT <- allTtotalProbsGivenT$pTtotalGivenT /sum(allTtotalProbsGivenT$pTtotalGivenT)
+  #Predict Median
+  sum = 0
+  pTtotalGivenT <- allTtotalProbsGivenT$pTtotalGivenT
+  medi <- sum(pTtotalGivenT)/2
+  idx <- 1
+  lenpTtotal <- length(pTtotalGivenT)
+  while (sum < medi && idx < lenpTtotal) {
+    sum = sum + pTtotalGivenT[idx]
+    idx = idx + 1
+  }
+
+  pred <- allTtotalProbsGivenT$Ttotal[idx-1]
+  socialPredictions[[2]][t] <- pred
+}
+
+print("Social Predictions: ")
+print(socialPredictions)
+write.csv(socialPredictions, file = paste(story,"SocialPredictions.csv", sep=""),row.names = FALSE)
+
+nonSocialPredictions <- read.csv(paste(story,"Predictions.csv", sep=""))
+
+
+colors <- c("Social" = "darkgreen", "Non-Social" = "royalblue")
+
+plt <- ggplot(socialPredictions, aes(x=Level, y=Prediction)) + geom_line(size=2, aes(color="Social"))
+plt <- plt + geom_line(data=nonSocialPredictions, aes(x=t,y=pred, color="Non-Social"), size=2)
+plt <- plt + ggtitle(paste(story,": ", "Social vs Non-Social Predictions", sep="")) + labs(color = "Context")+ scale_color_manual(values = colors)
+plt

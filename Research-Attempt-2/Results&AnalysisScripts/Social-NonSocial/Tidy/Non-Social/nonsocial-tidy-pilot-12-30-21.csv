@@ -1,0 +1,16 @@
+Subject,Story,Level,Context,Prediction
+1,cake,1,Non-Social,12.0
+1,cake,2,Non-Social,23.0
+1,cake,3,Non-Social,40.0
+1,cake,4,Non-Social,56.0
+1,cake,5,Non-Social,76.0
+1,movie,1,Non-Social,36.0
+1,movie,2,Non-Social,49.0
+1,movie,3,Non-Social,67.0
+1,movie,4,Non-Social,91.0
+1,movie,5,Non-Social,105.0
+1,podcast,1,Non-Social,22.0
+1,podcast,2,Non-Social,38.0
+1,podcast,3,Non-Social,62.0
+1,podcast,4,Non-Social,82.0
+1,podcast,5,Non-Social,112.0
