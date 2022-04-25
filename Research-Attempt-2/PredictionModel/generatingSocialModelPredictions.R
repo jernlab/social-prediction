@@ -1,9 +1,10 @@
-## =====================
-## =====================
-## FUNCTION DEFINITIONS
-## =====================
-## =====================
-computeModelPosterior<-function(t_total, t, t_total_info, contextRatingGivenT){
+#Non-Social Model Predictions
+
+
+library(purrr)
+library(ggplot2)
+
+computeModelPosterior_social<-function(t_total, t, t_total_info, b0, b1){
   #t_total        : The value of t_total in P(t_total | t)
   #t              : The value of t in P(t_total | t)
   #gamma           : gamma parameter (Not used in generating these predictions, leftover from implementation of original model)
@@ -28,112 +29,120 @@ computeModelPosterior<-function(t_total, t, t_total_info, contextRatingGivenT){
     }
   }
   
-  likelihood = contextRatingGivenT
+  utility <- 1/(t_total - t)
   
+  likelihood = 1/(1 + exp(-(b0 + b1*utility)))
   t_prior = 0
   given_t_total_prior = 0
   
   #P(t) = sum of p(t_total)/t_total
-  t_prior = t_total_info[[2]][c(startIndex:num_rows)] / t_total_info[[1]][c(startIndex:num_rows)]
-  
-  for(i in (startIndex:num_rows)){
+  for(i in (1:num_rows)){
+    t_prior = t_prior + (t_total_probs_vec[i,]/t_total_vals_vec[i,])
     #Storing the t_total probability for the t_total passed as the function's parameter
     if(t_total_vals_vec[i,] == t_total) given_t_total_prior = t_total_probs_vec[i,]
   }
   
-  
   #Bayes Rules
-  return (likelihood * given_t_total_prior) #/ t_prior
+  return (likelihood * given_t_total_prior) / t_prior
 }
 
-
-## =====================
-## =====================
-##       ANALYSIS
-## =====================
-## =====================
-## Chose the Story to do data analysis on ##
-storyNum = 1
-
-inferred_cake_ratings <- read.csv("interpolatedCakeRatings.csv")
-inferred_movie_ratings <- read.csv("interpolatedMovieRatings.csv")
-inferred_podcast_ratings <- read.csv("interpolatedPodcastRatings.csv")
-
-inferred_cake_ratings$predicted_rating <- inferred_cake_ratings$predicted_rating/8
-inferred_movie_ratings$predicted_rating <- inferred_movie_ratings$predicted_rating/8
-inferred_podcast_ratings$predicted_rating <- inferred_podcast_ratings$predicted_rating/8
-
-storyRatings <- switch (storyNum,
-  inferred_cake_ratings,
-  inferred_movie_ratings,
-  inferred_podcast_ratings
-)
-
-stories <- c('cake','movie','podcast')
-story <- stories[storyNum]
-
-## T's used at each level for Cake, Movie, & Podcast respectively
-t_s <- list(c(10, 20, 35, 50, 70), c(30, 45, 60, 85, 100), c(15, 30, 55, 75, 105))
-
-storyTs <- t_s[[storyNum]]
-
-## Load the data
-t_totalProbs <- read.csv(paste(story,"Probs.csv",sep = ""))
-
-
-storyRatings$predicted_rating <- storyRatings$predicted_rating / 8
-
-maxTtoPredict <- max(storyTs + 5)
-
-socialPredictions <- data.frame(Level = c(1:maxTtoPredict), Prediction = c(1:maxTtoPredict))
-
-tsToPredict <- c(1:maxTtoPredict)
-
-maxIter <- max(t_totalProbs[1])
-maxTtotal <- max(t_totalProbs[1])
-## Iterate through levels of story
-for(t in tsToPredict){
+##Generate a single Social prediction
+generateSocialPrediction <- function(t,b0,b1){
+  dataP <-  probs
+  maxTtotal <- max(dataP[[1]])
   x_space <- c(t:maxTtotal)
-  
-  ## Dataframe for storing computed posteriors
-  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = c(t:maxTtotal))
-  conRating <- storyRatings[[1]][t]
   idx <- 1
   
-  ## Generate P(t_total | t) for t=value of t at level, t_total = current t_total in the iteration 
+  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = rep(maxTtotal-t))
   for(i in x_space){
-    probTtotalGivenT <- computeModelPosterior(i, t, t_totalProbs, conRating)
+    probTtotalGivenT <- computeModelPosterior_social(i, t, dataP, b0,b1)
     allTtotalProbsGivenT$pTtotalGivenT[idx] <- probTtotalGivenT
-    # print(probTtotalGivenT)
     idx <- idx + 1
   }
   
-  allTtotalProbsGivenT$pTtotalGivenT <- allTtotalProbsGivenT$pTtotalGivenT /sum(allTtotalProbsGivenT$pTtotalGivenT)
   #Predict Median
   sum = 0
   pTtotalGivenT <- allTtotalProbsGivenT$pTtotalGivenT
   medi <- sum(pTtotalGivenT)/2
-  idx <- 1
+  idx = 1
   lenpTtotal <- length(pTtotalGivenT)
   while (sum < medi && idx < lenpTtotal) {
     sum = sum + pTtotalGivenT[idx]
     idx = idx + 1
   }
-
+  
   pred <- allTtotalProbsGivenT$Ttotal[idx-1]
-  socialPredictions[[2]][t] <- pred
+  return(pred)
 }
 
-print("Social Predictions: ")
-print(socialPredictions)
-write.csv(socialPredictions, file = paste(story,"SocialPredictions.csv", sep=""),row.names = FALSE)
+## Generate multiple social predictions for t's in a certain range
+generateMultipleSocialPredictions <- function(t, tMax, tMin=NULL, b0,b1){
+  tVals <- 0
+  if(!is.null(tMin)){
+    tVals <- c(tMin:tMax)
+  }
+  else{
+    tVals <- c(t:tMax)
+  }
+  
+  df <- data.frame(t=tVals, pred=rep(0, length(tVals)))
+  
+  ix = 1
+  
+  for(tVal in tVals){
+    print("Generating for ")
+    print(tVal)
+    pred = generateSocialPrediction(t=tVal, b0, b1)
+    df$pred[ix] <- pred
+    ix = ix + 1
+  }
+  
+  
+  return(df)
+}
 
-nonSocialPredictions <- read.csv(paste(story,"Predictions.csv", sep=""))
+
+## Create a social model with certain parameters. Returned function can be applied to
+## vectors & lists.
+createSocialModel <- function(b0,b1){
+  return(function(t){
+    generateSocialPrediction(t, b0, b1)
+  })
+}
 
 
-colors <- c("Social" = "darkgreen", "Non-Social" = "royalblue")
 
-plt <- ggplot(socialPredictions, aes(x=Level, y=Prediction)) + geom_line(size=2, aes(color="Social"))
-plt <- plt + geom_line(data=nonSocialPredictions, aes(x=t,y=pred, color="Non-Social"), size=2)
-plt <- plt + ggtitle(paste(story,": ", "Social vs Non-Social Predictions", sep="")) + labs(color = "Context")+ scale_color_manual(values = colors)
-plt
+
+
+
+
+
+# ## UNCOMMENT THIS BLOCK TO GENERATE PREDICTIONS INSIDE THIS FILE
+# ## ========================================================================================
+# ## Change this number to match the story you'd like to generate predictions for
+# ## 1 = Cake
+# ## 2 = Movie
+# ## 3 = Podcast
+# ## Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
+# 
+# storyNum <- 1
+# 
+# filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
+# 
+# probs <- read.csv(filename)
+# 
+# startTimestamp <- timestamp()
+# df <- generateMultipleSocialPredictions(t=10,tMax=110, tMin=1)
+# generateSocialPrediction(45, 5, 2)
+# endTimestamp <- timestamp()
+# 
+# # 
+# plt <- ggplot(df) + geom_line(mapping = aes(x=t, y=pred), color="blue", size=1.3) + ylab("Prediction") + ggtitle("Non-Social Podcast Duration Predictions") + theme(axis.title.x = element_text(size=20, face="bold"),
+#                                                                                                                                                                     axis.title.y = element_text(size=20, face="bold"),
+#                                                                                                                                                                     axis.text.x = element_text(size=16),
+#                                                                                                                                                                     axis.text.y = element_text(size=16),
+#                                                                                                                                                                     plot.title = element_text(size=25, face="bold")
+# )+coord_cartesian(xlim=c(0,120))
+# plt
+# ## ========================================================================================
+# ## UNCOMMENT THIS BLOCK TO GENERATE PREDICTIONS INSIDE THIS FILE

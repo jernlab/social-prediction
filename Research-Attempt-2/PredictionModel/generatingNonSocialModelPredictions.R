@@ -47,7 +47,7 @@ computeModelPosterior_deriv<-function(t_total, t, t_total_info, flag){
 
 generateNonSocialPrediction <- function(t, story=0){
   dataP <-  probs
-  maxTtotal <- max(dataP$runtime)
+  maxTtotal <- max(dataP[[1]])
   x_space <- c(t:maxTtotal)
   idx <- 1
   
@@ -97,27 +97,29 @@ generateMultipleNonSocialPredictions <- function(t, tMax, tMin=NULL){
 
   return(df)
 }
-
-# Change this number to match the story you'd like to generate predictions for
-# 1 = Cake
-# 2 = Movie
-# 3 = Podcast
-# Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
-storyNum <- 1
-
-filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
-
-probs <- read.csv(filename)
-
-startTimestamp <- timestamp()
-df <- generateMultipleNonSocialPredictions(t=10,tMax=110, tMin=1)
-endTimestamp <- timestamp()
-
-plt <- ggplot(df) + geom_line(mapping = aes(x=t, y=pred), color="blue", size=1.3) + ylab("Prediction") + ggtitle("Non-Social Podcast Duration Predictions") + theme(axis.title.x = element_text(size=20, face="bold"),
-                                                                                                 axis.title.y = element_text(size=20, face="bold"),
-                                                                                                 axis.text.x = element_text(size=16),
-                                                                                                 axis.text.y = element_text(size=16),
-                                                                                                 plot.title = element_text(size=25, face="bold")
-                                                                                                 )+coord_cartesian(xlim=c(0,120))
-plt
- 
+# ## UNCOMMENT THIS BLOCK TO GENERATE PREDICTIONS INSIDE THIS FILE
+# ## ========================================================================================
+# # Change this number to match the story you'd like to generate predictions for
+# # 1 = Cake
+# # 2 = Movie
+# # 3 = Podcast
+# # Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
+# storyNum <- 1
+# 
+# filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
+# 
+# probs <- read.csv(filename)
+# 
+# startTimestamp <- timestamp()
+# df <- generateMultipleNonSocialPredictions(t=10,tMax=110, tMin=1)
+# endTimestamp <- timestamp()
+# 
+# plt <- ggplot(df) + geom_line(mapping = aes(x=t, y=pred), color="blue", size=1.3) + ylab("Prediction") + ggtitle("Non-Social Podcast Duration Predictions") + theme(axis.title.x = element_text(size=20, face="bold"),
+#                                                                                                  axis.title.y = element_text(size=20, face="bold"),
+#                                                                                                  axis.text.x = element_text(size=16),
+#                                                                                                  axis.text.y = element_text(size=16),
+#                                                                                                  plot.title = element_text(size=25, face="bold")
+#                                                                                                  )+coord_cartesian(xlim=c(0,120))
+# plt
+# ## ========================================================================================
+# ## UNCOMMENT THIS BLOCK TO GENERATE PREDICTIONS INSIDE THIS FILE

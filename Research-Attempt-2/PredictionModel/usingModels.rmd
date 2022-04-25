@@ -1,0 +1,55 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Load functions to use prediction models
+
+```{r}
+source("generatingSocialModelPredictions.R")
+source("generatingNonSocialModelPredictions.R")
+```
+
+<!-- Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*. -->
+
+<!-- When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file). -->
+
+Loading data
+```{r}
+# Change this number to match the story you'd like to generate predictions for
+# 1 = Cake
+# 2 = Movie
+# 3 = Podcast
+# Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
+storyNum <- 1
+filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
+tList <- switch(storyNum, c(10,20,35,50,70), c(30,45,60,85,100), c(15,30,55,75,105))
+probs <- read.csv(filename)
+```
+
+
+Running original model
+```{r}
+predictions_ns <- sapply(tList, generateNonSocialPrediction)
+
+```
+
+
+Set-up Social Model parameters & run model
+```{r}
+b0 <- 10
+b1 <- 5
+socialModel <- createSocialModel(b0, b1)
+predictions_s <- sapply(tList, socialModel)
+```
+
+Plotting the predictions on the same graph
+```{r}
+library(ggplot2)
+
+socDF <- data.frame(t = tList, prediction = predictions_s, cond = "Social")
+nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
+df <- rbind(socDF, nsDF)
+ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
+```
+
