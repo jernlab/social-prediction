@@ -15,6 +15,9 @@ plotStory <- function(story){
   
   socialGroup <- dfGrouped %>% summarise(avg = mean(Prediction))
   
+  
+  write.table(socialGroup[c(3:5)],file=paste(story, "Means.csv", sep = ""), row.names = FALSE, sep=",")
+  
   plt <- ggplot(nonSocialPredictons, aes(x=t, y=pred)) + geom_line(size=1.5, color="black")
   plt <- plt+ geom_jitter(dfGrouped, mapping=aes(x=T_val, y=Prediction, color=Context),size=2,alpha=0.4, width=1.2, height=3)
   plt <- plt + with_shadow(stat_summary(dfGrouped, mapping=aes(x=T_val, y=Prediction, color=Context), size=2, fun.data = "mean_cl_boot"), sigma = 3, x_offset = 2, y_offset = 2)

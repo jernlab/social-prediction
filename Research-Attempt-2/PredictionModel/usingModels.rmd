@@ -25,6 +25,10 @@ storyNum <- 1
 filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
 tList <- switch(storyNum, c(10,20,35,50,70), c(30,45,60,85,100), c(15,30,55,75,105))
 probs <- read.csv(filename)
+
+meansFilename <- switch(storyNum, "cakeMeans.csv", "movieMeans.csv", "podcastMeans.csv")
+meansFilename <- paste("../Analysis/experimentAverages/", meansFilename, sep="")
+storyMeans <- read.csv(meansFilename)
 ```
 
 
@@ -51,5 +55,68 @@ socDF <- data.frame(t = tList, prediction = predictions_s, cond = "Social")
 nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
 df <- rbind(socDF, nsDF)
 ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
+```
+Custom Grid Search function that minimizes MSE (No cross-validation)
+
+```{r}
+gridSearch <- function(x,y,b0s, b1s){
+  minMSE = 1000000
+  bestb0 = b0s[0]
+  bestb1 = b1s[0]
+  for(b0 in b0s){
+    for(b1 in b1s){
+      print(paste("GridSearch - b0:", b0))
+      print(paste("GridSearch - b1:", b1))
+      mySCModel = createSocialModel(b0, b1)
+      scPred = sapply(x, mySCModel) 
+      mse = MSE(scPred, y)
+      if(mse < minMSE) {
+        minMSE = mse
+        bestb0 = b0
+        bestb1 = b1
+        }
+    }
+  }
+  
+  return (c(minMSE, bestb0, bestb1))
+}
+```
+
+
+
+Social model cross validation
+
+```{r}
+library(dplyr)
+expMeans <- storyMeans %>% filter(Context == "Social") %>% select(avg)
+expMeans <- expMeans$avg
+
+B0s <- seq(0.5,10,0.5)
+B1s <- seq(-5,5, 0.5)
+B1s <- B1s[B1s != 0]
+
+start<-timestamp()
+
+res = gridSearch(tList, expMeans, B0s, B1s)
+
+end <- timestamp()
+
+print("Total Completion Time: ", end - start)
+print(paste("Best MSE: ", res[1]))
+print(paste("b0: ", res[2]))
+print(paste("b1: ", res[3]))
+```
+
+Testing best parameters
+
+```{r}
+rmse <- sqrt(res[1])
+B0 <- res[2]
+B1 <- res[3]
+
+bestModel <- createSocialModel(B0,B1)
+pred <- sapply(tList, bestModel)
+
+RMSE(pred, expMeans)
 ```
 
