@@ -20,7 +20,14 @@ computeModelPosterior_social<-function(t_total, t, t_total_info, b0, b1){
   
   #Vector of all t_total_probs
   t_total_probs_vec = t_total_info[2]
+  num_rows = nrow(t_total_vals_vec)
   
+  # for(i in (1:num_rows)){
+  #   if(t_total_info[i,1] >= t){
+  #     startIndex = i
+  #     break
+  #   }
+  # }
   startIndex = which(t_total_vals_vec >= t)[1]
   
   utility <- 1/(t_total - t)
@@ -29,13 +36,14 @@ computeModelPosterior_social<-function(t_total, t, t_total_info, b0, b1){
   }
   
   likelihood = 1/(1 + exp(-(b0 + b1*utility)))
+  t_prior = 0
+  given_t_total_prior = 0
   t_total_prior = 0
   t_total_idx <- which(t_total_vals_vec == t)[1]
   if(!is.na(t_total_idx)){
     t_total_prior = t_total_probs_vec[[1]][t_total_idx]
   }
   
-  if(t_total_prior == 0) return (0)
   #P(t) = sum of (p(t_total)/t_total) * regression function
   # for(i in (1:num_rows)){
   #   t_prior = t_prior + (t_total_probs_vec[i,]/t_total_vals_vec[i,]) * (1/(1 + exp(-(b0 + b1 * (1/t_total_vals_vec[i,] - t)))))
@@ -53,17 +61,16 @@ computeModelPosterior_social<-function(t_total, t, t_total_info, b0, b1){
     p_t_totals <- t_total_probs_vec[[1]][-c(1:startIndex-1)]
   }
   
-  likelihoodTerms <- rep(likelihood, length(t_totals))
-  p_t_total_rep <- rep(t_total_prior, length(t_totals))
-  t_total_rep <- rep(t_total, length(t_totals))
-  
-  p_t_and_o <-  sum((p_t_total_rep/t_total_rep)*likelihoodTerms)
+  likelihoodTerms <- getRegressFunc(t, b0,b1)(t_totals)
+  p_t_and_o <-  sum((p_t_totals/t_totals)*likelihoodTerms)
   
   #Bayes Rules
   return (likelihood * t_total_prior  / p_t_and_o)
 }
 
-
+# getSocialPosteriorFunc <- function(t_total_info, b0, b1){
+#   return (function (t_))
+# }
 
 getRegressFunc <- function(t, b0, b1){
   return (function(t_total) {
@@ -71,8 +78,6 @@ getRegressFunc <- function(t, b0, b1){
     # return (1/(1 + exp(-(b0 + b1*(1/(t_total-t))))))
     })
 }
-
-
 
 ##Generate a single Social prediction
 generateSocialPrediction <- function(t,b0,b1){
