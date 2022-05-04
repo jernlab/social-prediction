@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
+# In[72]:
 
 
 import pandas as pd
@@ -9,33 +9,33 @@ import numpy as np
 import json
 
 
-# In[7]:
+# In[73]:
 
 
 podcasts = pd.read_csv("df_popular_podcasts.csv")
 podcasts.head(3)
 
 
-# In[8]:
+# In[74]:
 
 
 durations = podcasts["Episode Durations"]
 durations.head(3)
 
 
-# In[15]:
+# In[75]:
 
 
 np.array(json.loads(durations[0])).round()
 
 
-# In[27]:
+# In[76]:
 
 
 list(map(json.loads, durations))
 
 
-# In[28]:
+# In[77]:
 
 
 def flatten_list(_2d_list):
@@ -51,47 +51,66 @@ def flatten_list(_2d_list):
     return flat_list
 
 
-# In[31]:
+# In[78]:
 
 
 durations_np = np.array(flatten_list(list(map(json.loads, durations))))
 
 
-# In[32]:
+# In[79]:
 
 
 durations_np
 
 
-# In[33]:
+# In[80]:
 
 
 rounded_durations = durations_np.round()
 
 
-# In[34]:
+# In[81]:
 
 
 rounded_durations
 
 
-# In[38]:
+# In[82]:
 
 
 myCSV = pd.DataFrame()
 myCSV["durations"] = rounded_durations
 
 
-# In[39]:
+# In[93]:
 
 
-myCSV.head(3)
+counts = myCSV.value_counts()
+counts = counts.reset_index()
+counts.rename(columns={ counts.columns[1]: "Counts" }, inplace = True)
+counts = counts.sort_values(by="durations")
+counts['durations'] = counts['durations'].astype(int)
+counts = counts[ counts['durations'] != 0]
+counts = counts[ counts['durations'] <= 400]
+probs = counts.copy()
+probs['Counts'] = counts['Counts']/counts.Counts.sum()
+probs.rename(columns={ probs.columns[1] : "prob", probs.columns[0]: 'duration'}, inplace = True)
+probs
+# counts
+# durs = pd.DataFrame(counts, columns=['Durations', 'Counts'])
+# durs
+
+
+# In[95]:
+
+
+probs.head(3)
 
 
 # In[40]:
 
 
-myCSV.to_csv("podcastDurations.csv")
+probs.to_csv("podcastProbs.csv", index=False)
 
 
 # In[ ]:
