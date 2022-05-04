@@ -24,7 +24,7 @@ Loading data
 # 2 = Movie
 # 3 = Podcast
 # Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
-storyNum <- 1
+storyNum <- 2
 filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
 tList <- switch(storyNum, c(10,20,35,50,70), c(30,45,60,85,100), c(15,30,55,75,105))
 probs <- read.csv(filename)
@@ -54,8 +54,8 @@ library(MLmetrics)
 expMeans <- storyMeans %>% filter(Context == "Social") %>% select(avg)
 expMeans <- expMeans$avg
 
-b0 <- -3.5
-b1 <- 30
+b0 <- -8.5
+b1 <- 80
 socialModel <- createSocialModel(b0, b1)
 predictions_s <- sapply(tList, socialModel)
 # sqrt(MSE(predictions_s, expMeans))
@@ -67,7 +67,7 @@ library(ggplot2)
 socDF <- data.frame(t = tList, prediction = predictions_s, cond = "Social")
 nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
 df <- rbind(socDF, nsDF)
-ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4, alpha=0.7) + scale_x_continuous(breaks = tList)
+ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
 ```
 Custom Grid Search function that minimizes MSE (No cross-validation)
 
@@ -140,7 +140,7 @@ Social model cross validation
 ```{r}
 library(dplyr)
 B0s <- seq(-20,20,0.5)
-B1s <- seq(1,40,1)
+B1s <- seq(0,400,5)
 B0s <- B0s[B0s != 0]
 
 system.time(res <- gridSearch(tList, socialResults, B0s, B1s))
@@ -171,7 +171,7 @@ ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_c
 ```
 Testing predictions
 ```{r}
-newModel <- createSocialModel(-3.5,30)
+newModel <- createSocialModel(-8,350)
 t_pred <- sapply(tList, newModel)
 
 socDF <- data.frame(t = tList, prediction = t_pred, cond = "Social")
