@@ -8,6 +8,9 @@ Load functions to use prediction models
 ```{r}
 source("generatingSocialModelPredictions.R")
 source("generatingNonSocialModelPredictions.R")
+
+library(dplyr)
+
 ```
 
 <!-- Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*. -->
@@ -48,11 +51,10 @@ predictions_ns <- sapply(tList, generateNonSocialPrediction)
 Set-up Social Model parameters & run model
 ```{r}
 library(MLmetrics)
-library(dplyr)
 expMeans <- storyMeans %>% filter(Context == "Social") %>% select(avg)
 expMeans <- expMeans$avg
 
-b0 <- -4.5
+b0 <- -3.5
 b1 <- 30
 socialModel <- createSocialModel(b0, b1)
 predictions_s <- sapply(tList, socialModel)
@@ -65,7 +67,7 @@ library(ggplot2)
 socDF <- data.frame(t = tList, prediction = predictions_s, cond = "Social")
 nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
 df <- rbind(socDF, nsDF)
-ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
+ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4, alpha=0.7) + scale_x_continuous(breaks = tList)
 ```
 Custom Grid Search function that minimizes MSE (No cross-validation)
 
@@ -75,8 +77,14 @@ gridSearch <- function(x,y,b0s, b1s){
   bestb0 = b0s[0]
   bestb1 = b1s[0]
   
+  lenList <- sapply(x, function(t){
+    return(length((y %>% filter(T_val == t) %>% select(Prediction))$Prediction))
+  })
+  
+  minN = min(lenList)
+  
   y_lv <- as.data.frame(sapply(x, function(t){
-    return((y %>% filter(T_val == t) %>% select(Prediction))$Prediction)
+    return(((y %>% filter(T_val == t) %>% select(Prediction))$Prediction)[c(1:minN)])
   }))
   
   y1 <- y_lv[[1]]
@@ -98,11 +106,18 @@ gridSearch <- function(x,y,b0s, b1s){
       
       scPredRep <- sapply(scPred, function(p) rep(p, n))
       
-      pr1 <- MSE(y1,scPredRep[,1])
-      pr2 <- MSE(y2,scPredRep[,2])
-      pr3 <- MSE(y3,scPredRep[,3])
-      pr4 <- MSE(y4,scPredRep[,4])
-      pr5 <- MSE(y5,scPredRep[,5])
+      yPred1 <- scPredRep[,1]
+      yPred2 <- scPredRep[,2]
+      yPred3 <- scPredRep[,3]
+      yPred4 <- scPredRep[,4]
+      yPred5 <- scPredRep[,5]
+      
+      pr1 <- MSE(y1,yPred1)
+      pr2 <- MSE(y2,yPred2)
+      pr3 <- MSE(y3,yPred3)
+      pr4 <- MSE(y4,yPred4)
+      pr5 <- MSE(y5,yPred5)
+      
       # print(scPred)
       mse = sum(c(pr1,pr2,pr3,pr4,pr5))
       # print(paste("MSE:", mse))
@@ -125,7 +140,7 @@ Social model cross validation
 ```{r}
 library(dplyr)
 B0s <- seq(-20,20,0.5)
-B1s <- seq(20,35, 0.5)
+B1s <- seq(1,40,1)
 B0s <- B0s[B0s != 0]
 
 system.time(res <- gridSearch(tList, socialResults, B0s, B1s))
@@ -156,7 +171,7 @@ ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_c
 ```
 Testing predictions
 ```{r}
-newModel <- createSocialModel(-4.5,35)
+newModel <- createSocialModel(-3.5,30)
 t_pred <- sapply(tList, newModel)
 
 socDF <- data.frame(t = tList, prediction = t_pred, cond = "Social")

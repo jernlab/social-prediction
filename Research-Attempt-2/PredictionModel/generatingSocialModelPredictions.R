@@ -39,7 +39,7 @@ computeModelPosterior_social<-function(t_total, t, t_total_info, b0, b1){
   t_prior = 0
   given_t_total_prior = 0
   t_total_prior = 0
-  t_total_idx <- which(t_total_vals_vec == t)[1]
+  t_total_idx <- which(t_total_vals_vec == t_total)[1]
   if(!is.na(t_total_idx)){
     t_total_prior = t_total_probs_vec[[1]][t_total_idx]
   }
@@ -86,13 +86,19 @@ generateSocialPrediction <- function(t,b0,b1){
   x_space <- c(t:maxTtotal)
   idx <- 1
   
-  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = rep(maxTtotal-t))
-  for(i in x_space){
-    probTtotalGivenT <- computeModelPosterior_social(i, t, dataP, b0,b1)
-    allTtotalProbsGivenT$pTtotalGivenT[idx] <- probTtotalGivenT
-    idx <- idx + 1
-  }
+  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = rep(0,length(x_space)))
   
+  ttotalPosts <- sapply(x_space, function (x) {
+    probTtotalGivenT = computeModelPosterior_social(x, t, dataP, b0, b1)
+  })
+  
+  # for(i in x_space){
+  #   probTtotalGivenT <- computeModelPosterior_social(i, t, dataP, b0,b1)
+  #   allTtotalProbsGivenT$pTtotalGivenT[idx] <- probTtotalGivenT
+  #   idx <- idx + 1
+  # }
+  # 
+  allTtotalProbsGivenT$pTtotalGivenT <- ttotalPosts
   # allTtotalProbsGivenT$pTtotalGivenT <- sapply(x_space, (function (x) computeModelPosterior_social(x, t, dataP, b0,b1)))
   # posteriors <- sapply(x_space, (function (x) computeModelPosterior_social(x, t, dataP, b0,b1)) )
   
