@@ -24,7 +24,7 @@ Loading data
 # 2 = Movie
 # 3 = Podcast
 # Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
-storyNum <- 2
+storyNum <- 1
 filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
 tList <- switch(storyNum, c(10,20,35,50,70), c(30,45,60,85,100), c(15,30,55,75,105))
 probs <- read.csv(filename)
@@ -55,7 +55,7 @@ expMeans <- storyMeans %>% filter(Context == "Social") %>% select(avg)
 expMeans <- expMeans$avg
 
 b0 <- -8.5
-b1 <- 80
+b1 <- 400
 socialModel <- createSocialModel(b0, b1)
 predictions_s <- sapply(tList, socialModel)
 # sqrt(MSE(predictions_s, expMeans))
@@ -215,4 +215,6 @@ nsMeans <- (storyMeans %>% filter(Context == "Social") %>% select(avg))$avg
   
 RMSE(predictions_ns, nsMeans)
 ```
+```{r}
 
+```

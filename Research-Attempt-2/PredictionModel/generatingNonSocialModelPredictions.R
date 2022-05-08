@@ -4,7 +4,7 @@
 library(purrr)
 library(ggplot2)
 
-computeModelPosterior_deriv<-function(t_total, t, t_total_info, flag){
+computeModelPosterior_deriv<-function(t_total, t, t_total_info){
   #t_total        : The value of t_total in P(t_total | t)
   #t              : The value of t in P(t_total | t)
   #gamma           : gamma parameter (Not used in generating these predictions, leftover from implementation of original model)
@@ -22,27 +22,32 @@ computeModelPosterior_deriv<-function(t_total, t, t_total_info, flag){
   t_total_probs_vec = t_total_info[2]
   num_rows = nrow(t_total_vals_vec)
   
-  for(i in (1:num_rows)){
-    if(t_total_info[i,1] >= t){
-      startIndex = i
-      break
-    }
-  }
+  startIndex = which(t_total_vals_vec >= t)[1]
   
-  likelihood = 1/t_total #Otherwise generate non-social predictions
-  
+  likelihood = 1/t_total
   t_prior = 0
   given_t_total_prior = 0
-  
-  #P(t) = sum of p(t_total)/t_total
-  for(i in (1:num_rows)){
-    t_prior = t_prior + (t_total_probs_vec[i,]/t_total_vals_vec[i,])
-    #Storing the t_total probability for the t_total passed as the function's parameter
-    if(t_total_vals_vec[i,] == t_total) given_t_total_prior = t_total_probs_vec[i,]
+  t_total_prior = 0
+  t_total_idx <- which(t_total_vals_vec == t_total)[1]
+  if(!is.na(t_total_idx)){
+    t_total_prior = t_total_probs_vec[[1]][t_total_idx]
   }
   
+  t_totals <- 0
+  p_totals <- 0
+  
+  if(startIndex == 1){
+    t_totals <- t_total_vals_vec[[1]]
+    p_t_totals <- t_total_probs_vec[[1]]}
+  else{
+    t_totals <- t_total_vals_vec[[1]][-c(1:startIndex-1)]
+    p_t_totals <- t_total_probs_vec[[1]][-c(1:startIndex-1)]
+  }
+  
+  p_t <-  sum(p_t_totals/t_totals)
+  
   #Bayes Rules
-  return (likelihood * given_t_total_prior) / t_prior
+  return (likelihood * t_total_prior  / p_t)
 }
 
 generateNonSocialPrediction <- function(t, story=0){
@@ -51,12 +56,14 @@ generateNonSocialPrediction <- function(t, story=0){
   x_space <- c(t:maxTtotal)
   idx <- 1
   
-  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = rep(maxTtotal-t))
-  for(i in x_space){
-    probTtotalGivenT <- computeModelPosterior_deriv(i, t, dataP, 5)
-    allTtotalProbsGivenT$pTtotalGivenT[idx] <- probTtotalGivenT
-    idx <- idx + 1
-  }
+  allTtotalProbsGivenT <- data.frame(Ttotal = x_space, pTtotalGivenT = rep(0,length(x_space)))
+  
+  ttotalPosts <- sapply(x_space, function (x) {
+    probTtotalGivenT = computeModelPosterior_deriv(x, t, dataP)
+  })
+  
+  # 
+  allTtotalProbsGivenT$pTtotalGivenT <- ttotalPosts
   
   #Predict Median
   sum = 0

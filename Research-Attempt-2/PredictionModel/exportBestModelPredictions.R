@@ -3,8 +3,8 @@
 # in the experiments
 ts <-list(
   Cake = c(1:75),
-  Movie = c(1:100),
-  Podcast = c(1:105)
+  Movie = c(1:110),
+  Podcast = c(1:110)
 ) 
 
 tLevels <-list(
@@ -17,9 +17,9 @@ tLevels <-list(
 # These were determined by grid search minimizing MSE found in the `usingModels.rmd`
 # file in this folder
 params <- list(
-  Cake = c(-3.5,30),
-  Movie = c(-8, 350),
-  Podcast = c(-4.5, 28)
+  Cake = c(-4,40),
+  Movie = c(-8, 400),
+  Podcast = c(-6.5, 50)
 )
 
 paramsDf <- as.data.frame(params)
@@ -31,24 +31,36 @@ movieModel <- createSocialModel(params$Movie[1], params$Movie[2])
 podcastModel <- createSocialModel(params$Podcast[1], params$Podcast[2])
 
 probs <- read.csv("../Data/cakeProbs.csv")
-Cake = sapply(ts$Cake,cakeModel)
+Cake <- sapply(ts$Cake,cakeModel)
 
 probs <- read.csv("../Data/movieProbs.csv")
-Movie = sapply(ts$Movie, movieModel)
+Movie <- sapply(ts$Movie, movieModel)
 
 probs <- read.csv("../Data/podcastProbs.csv")
 Podcast = sapply(ts$Podcast, podcastModel)
 
+allPredictions <- list(
+  Cake = Cake,
+  Movie = Movie,
+  Podcast = Podcast
+)
+
+CakePreds <- data.frame(Ts = ts$Cake, P=Cake)
+write.csv(CakePreds, file="../GeneratedPredictions/Social/cakePredictions.csv",row.names = FALSE)
+
+MoviePreds <- data.frame(Ts = ts$Movie, P=Movie)
+write.csv(MoviePreds, file="../GeneratedPredictions/Social/moviePredictions.csv",row.names = FALSE)
+
+PodcastPreds <- data.frame(Ts = ts$Podcast, P=Podcast)
+write.csv(PodcastPreds, file="../GeneratedPredictions/Social/podcastPredictions.csv",row.names = FALSE)
 
 library(ggplot2)
 library(patchwork)
-CakePreds <- data.frame(Ts = ts$Cake, P=Cake)
+
 CakePlot <- ggplot(CakePreds, aes(x=Ts, y=P)) + geom_line(size=1.5) + ggtitle("Cake")+ scale_x_continuous(breaks = tLevels$Cake)+ ylab("Prediction") +xlab("t")
 
-MoviePreds <- data.frame(Ts = ts$Movie, P=Movie)
 MoviePlot <- ggplot(MoviePreds, aes(x=Ts, y=P)) + geom_line(size=1.5) + ggtitle("Movie")+ scale_x_continuous(breaks = tLevels$Movie)+ ylab("Prediction")+xlab("t")
 
-PodcastPreds <- data.frame(Ts = ts$Podcast, P=Podcast)
 PodcastPlot <- ggplot(PodcastPreds, aes(x=Ts, y=P)) + geom_line(size=1.5)+ ggtitle("Podcast")+ scale_x_continuous(breaks = tLevels$Podcast)+ ylab("Prediction")+xlab("t")
 
 CakePlot + MoviePlot + PodcastPlot
