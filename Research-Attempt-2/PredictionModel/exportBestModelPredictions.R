@@ -14,7 +14,7 @@ tLevels <-list(
 ) 
 
 # Vectors for the params used in the best fitting social model for each story.
-# These were determined by grid search minimizing MSE found in the `usingModels.rmd`
+# These were determined by grid search minimizing MSE found in the `fittingSocialModel.rmd`
 # file in this folder
 params <- list(
   Cake = c(-4,40),

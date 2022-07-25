@@ -215,6 +215,3 @@ nsMeans <- (storyMeans %>% filter(Context == "Social") %>% select(avg))$avg
   
 RMSE(predictions_ns, nsMeans)
 ```
-```{r}
-
-```
