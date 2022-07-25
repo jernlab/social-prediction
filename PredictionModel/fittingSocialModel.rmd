@@ -1,0 +1,217 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Load functions to use prediction models
+
+```{r}
+source("generatingSocialModelPredictions.R")
+source("generatingNonSocialModelPredictions.R")
+
+library(dplyr)
+
+```
+
+<!-- Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*. -->
+
+<!-- When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file). -->
+
+Loading data
+```{r}
+# Change this number to match the story you'd like to generate predictions for
+# 1 = Cake
+# 2 = Movie
+# 3 = Podcast
+# Predictions can take as long as 15 minutes to generate depending on your largest value of t you're predicting for.
+storyNum <- 1
+filename <- switch (storyNum, "../Data/cakeProbs.csv", "../Data/movieProbs.csv","../Data/podcastProbs.csv")
+tList <- switch(storyNum, c(10,20,35,50,70), c(30,45,60,85,100), c(15,30,55,75,105))
+probs <- read.csv(filename)
+
+meansFilename <- switch(storyNum, "cakeMeans.csv", "movieMeans.csv", "podcastMeans.csv")
+meansFilename <- paste("../Analysis/experimentAverages/", meansFilename, sep="")
+allResults <- read.csv("../Results/Social-NonSocial/Tidy/filtered-tidy-data.csv")
+
+storyName <- switch(storyNum, "cake", "movie", "podcast")
+allResults <- allResults %>% filter(Story == storyName) %>% arrange(T_val)
+socialResults <- allResults %>% filter(Context == "Social")
+
+storyMeans <- read.csv(meansFilename)
+```
+
+
+Running original model
+```{r}
+predictions_ns <- sapply(tList, generateNonSocialPrediction)
+
+```
+
+
+Set-up Social Model parameters & run model
+```{r}
+library(MLmetrics)
+expMeans <- storyMeans %>% filter(Context == "Social") %>% select(avg)
+expMeans <- expMeans$avg
+
+b0 <- -8.5
+b1 <- 400
+socialModel <- createSocialModel(b0, b1)
+predictions_s <- sapply(tList, socialModel)
+# sqrt(MSE(predictions_s, expMeans))
+```
+
+Plotting the predictions on the same graph
+```{r}
+library(ggplot2)
+socDF <- data.frame(t = tList, prediction = predictions_s, cond = "Social")
+nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
+df <- rbind(socDF, nsDF)
+ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
+```
+Custom Grid Search function that minimizes MSE (No cross-validation)
+
+```{r}
+gridSearch <- function(x,y,b0s, b1s){
+  minMSE <- 1000000
+  bestb0 = b0s[0]
+  bestb1 = b1s[0]
+  
+  lenList <- sapply(x, function(t){
+    return(length((y %>% filter(T_val == t) %>% select(Prediction))$Prediction))
+  })
+  
+  minN = min(lenList)
+  
+  y_lv <- as.data.frame(sapply(x, function(t){
+    return(((y %>% filter(T_val == t) %>% select(Prediction))$Prediction)[c(1:minN)])
+  }))
+  
+  y1 <- y_lv[[1]]
+  y2 <- y_lv[[2]]
+  y3 <- y_lv[[3]]
+  y4 <- y_lv[[4]]
+  y5 <- y_lv[[5]]
+  
+  n <- length(y1)
+  
+  for(b1 in b1s){
+    print(paste("RMSE Through b1 =", b1))
+    print(sqrt(minMSE))
+    for(b0 in b0s){
+      # print(paste("GridSearch - b0:", b0))
+      # print(paste("GridSearch - b1:", b1))
+      mySCModel = createSocialModel(b0, b1)
+      scPred = sapply(x, mySCModel)
+      
+      scPredRep <- sapply(scPred, function(p) rep(p, n))
+      
+      yPred1 <- scPredRep[,1]
+      yPred2 <- scPredRep[,2]
+      yPred3 <- scPredRep[,3]
+      yPred4 <- scPredRep[,4]
+      yPred5 <- scPredRep[,5]
+      
+      pr1 <- MSE(y1,yPred1)
+      pr2 <- MSE(y2,yPred2)
+      pr3 <- MSE(y3,yPred3)
+      pr4 <- MSE(y4,yPred4)
+      pr5 <- MSE(y5,yPred5)
+      
+      # print(scPred)
+      mse = sum(c(pr1,pr2,pr3,pr4,pr5))
+      # print(paste("MSE:", mse))
+      if(mse < minMSE) {
+        minMSE <- mse
+        bestb0 = b0
+        bestb1 = b1
+        }
+    }
+  }
+  
+  return (c(minMSE, bestb0, bestb1))
+}
+```
+
+
+
+Social model cross validation
+
+```{r}
+library(dplyr)
+B0s <- seq(-20,20,0.5)
+B1s <- seq(0,400,5)
+B0s <- B0s[B0s != 0]
+
+system.time(res <- gridSearch(tList, socialResults, B0s, B1s))
+
+print(paste("Best MSE: ", res[1]))
+print(paste("b0: ", res[2]))
+print(paste("b1: ", res[3]))
+```
+
+Testing best parameters
+
+```{r}
+rmse <- sqrt(res[1])
+B0 <- res[2]
+B1 <- res[3]
+
+bestModel <- createSocialModel(B0,B1)
+pred <- sapply(tList, bestModel)
+
+RMSE(pred, expMeans)
+```
+Plotting best results
+```{r}
+socDF <- data.frame(t = tList, prediction = pred, cond = "Social")
+nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
+df <- rbind(socDF, nsDF)
+ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
+```
+Testing predictions
+```{r}
+newModel <- createSocialModel(-8,350)
+t_pred <- sapply(tList, newModel)
+
+socDF <- data.frame(t = tList, prediction = t_pred, cond = "Social")
+nsDF <- data.frame(t = tList, prediction = predictions_ns, cond = "NonSocial")
+df <- rbind(socDF, nsDF)
+ggplot(df,aes(x=t, y=prediction, color = cond)) + geom_point(size=4) + scale_x_continuous(breaks = tList)
+print(RMSE(t_pred, expMeans))
+```
+Evaluating performance
+```{r}
+
+nsResults <- allResults %>% filter(Context == "Non-Social")
+nsMeans <- (storyMeans %>% filter(Context == "Social") %>% select(avg))$avg
+
+  y_lv <- sapply(tList, function(t){
+    return((nsResults %>% filter(T_val == t) %>% select(Prediction))$Prediction)
+  })
+  
+  y1 <- y_lv[[1]]
+  y2 <- y_lv[[2]]
+  y3 <- y_lv[[3]]
+  y4 <- y_lv[[4]]
+  y5 <- y_lv[[5]]
+  
+  n <- length(y1)
+  
+  nsPredRep <- sapply(predictions_ns, function(p) rep(p, n))
+  rep1 <- rep(predictions_ns[1], length(y1))
+  rep2 <- rep(predictions_ns[2], length(y2))
+  rep3 <- rep(predictions_ns[3], length(y3))
+  rep4 <- rep(predictions_ns[4], length(y4))
+  rep5 <- rep(predictions_ns[5], length(y5))
+  
+  pr1 <- MSE(y1,rep1)
+  pr2 <- MSE(y2,rep2)
+  pr3 <- MSE(y3,rep3)
+  pr4 <- MSE(y4,rep4)
+  pr5 <- MSE(y5,rep5)
+  # print(scPred)
+  mse = sum(c(pr1,pr2,pr3,pr4,pr5))
+  
+RMSE(predictions_ns, nsMeans)
+```
