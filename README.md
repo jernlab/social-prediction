@@ -4,8 +4,8 @@
 
 - ```Data``` - CSV files for empirical data and their probability distributions. Used in generating predictions.
 
-- ```GeneratedPredictions``` - pre-generated predictions made by prediction models.
-    - ```/Social/InterpolatedContextRatings``` - Contains interpolated context ratings used in generating social predictions
+- ```GeneratedPredictions``` - contains CSV files of pre-generated predictions made by prediction models. Primarily useful for plotting predictions in R (using *ggplot*) without needing to generate them (predictions) every time.
+    - ```/Social/InterpolatedContextRatings``` - Contains interpolated context ratings initially used in empirical social model approach (see paper for details)
 
 - ```PredictionModel``` - contains R scripts for generating model predictions
 
